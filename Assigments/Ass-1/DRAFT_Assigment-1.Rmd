@@ -1,0 +1,143 @@
+---
+title: "Assignment 1"
+author: "Benjamin Moran \n c3076448 (University of Newcastle)"
+date: 'Date Generated: `r Sys.Date()`'
+bibliography: Ass1.bib
+output:
+  html_document:
+    df_print: tibble
+    fig_caption: yes
+  pdf_document: default
+subtitle: STAT904 Statistical Consulting
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+#### Plagiarism Statement 
+No part of this Assignment has been copied from anyone else, and I have not lent any part of it to anyone else. [@Cochran1954]
+
+### Question 1
+A researcher from the Nursing Department approaches you concerning her research. She has read a paper giving some results of an analysis of the relationship between the HSC (final year high school) results and the results in a first year university Nursing course. The correlations are given below.
+
+```{r table1, echo = FALSE}
+analysis_provided <- read_delim("Assignment-1_Table-1.txt", 
+                                delim = ",",
+                                col_types = list(col_character(),
+                                                 col_double(),
+                                                 col_double(),
+                                                 col_double(),
+                                                 col_double(),
+                                                 col_double(),
+                                                 col_integer()))
+knitr::kable(analysis_provided, caption = "Output of some analysis provided by the researcher")
+```
+
+She asks you to analyse these correlations. She seems interested in how the HSC scores predict university results and whether there was any change between the two years.
+
+#### a) What more would you want to know about the study?
+
+Questions about the sample
+
+* Does the sample contain every student who was enrolled in the nursing course?
+* Is there any structural component present in the data: i.e. clusters of schools, public vs. private schools, local vs. regional students.
+* Did the researchers exclude students who do not have a HSC score (i.e they completed the IB or are international students) OR did they attempt to account for this by mapping scores?
+* Did the researchers include students who completed NEWSTEP or some other pathway to university outside of the main secondary education system that still awards ATAR scores? Was this accounted for in the structural analysis?
+
+Questions about the comparison
+
+* Was there a change to the ATAR cutoff for the course between 2013 and 2014?
+* Were there any changes to some other policy or policies that would have an effect on university enrollments (e.g. incentives for local or regional students, financial incentives)
+* Was there a major change to the HSC, one that would cause a change in the marks that otherwise comparable students would receive.
+* Was there a change to the nursing program?
+* How was the comparison calculated? Was an individual student's mark in the HSC compared to their final marks from both semesters or some kind of average across the two semesters?
+
+Questions about the study
+
+* Who conducted the study originally?
+* Did they provided their data alongside their paper?
+* Did they detail their analysis in the paper and - if so - how much detail did they include? Is it replicable?
+* Has the paper been published? Has it been peer-reviewed?
+* Do they include details of the variability/credible or confidence intervals in the results section of their report?
+
+#### b) Carry out the required analysis and write a short report. Include any qualifications you think should be made concerning the analysis. 
+
+#### c) The researcher is planning to carry out her own study. Write a brief report on how she should plan and analyse her study.
+
+
+
+### Question 2
+
+A very common and widely applicable analysis method is the chi-squared test of independence. Write a report that covers the following:
+
+#### a) Briefly describe the test, including a discussion of when it is should be used.
+
+Pearson's $\chi^2$ test statistic ($X^2$) measures the strength of the association between the row and column entries of a contingency table. For an $I\times J$ contingency table (i.e. with $I$ rows and $J$ columns), it can be expressed as:
+
+$$
+\begin{aligned}
+X^2 &= \sum\limits^I_{i=1}\sum\limits^J_{j=1}\frac{\left(n_{ij} - \frac{n_{i\bullet}n_{\bullet j }}{n} \right)^2}{\frac{n_{i\bullet}n_{\bullet j }}{n}} \\
+&= n\times \sum\limits^I_{i=1}\sum\limits^J_{j=1}\frac{\left(p_{ij} - p_{i\bullet}p_{\bullet j } \right)^2}{p_{i\bullet}p_{\bullet j }} 
+\end{aligned}
+$$
+
+Where $n$ is the sum of the cell frequencies of the contingency table, $p_{ij}$ is the _proportion_ for the cell $ij$ (i.e. the the cell frequency $n_{ij}/n$), and $n_{i \bullet} = n*p_{i \bullet}$ and $n_{\bullet j} = n*p_{\bullet j}$  are the marginal frequencies/proportions for the $i'th$ row and $j'th$ column respectively.
+
+The hypothesis for the test is that:
+
+\begin{equation}
+H_0: p_{ij} = p_{i\bullet} p_{\bullet j} \\
+H_1: p_{ij} \neq p_{i\bullet} p_{\bullet j}
+\end{equation}
+
+As hinted at above, the test should be used when comparing the association between two sets of categorical data. 
+
+#### b) Many computer packages will give a warning message if the expected frequencies in some cells are less than 5. Briefly explain why this warning is given and what options are available for dealing with it.
+
+Pearson's $\chi^2$ test statistic
+
+#### c) Suppose we have the following table giving the number of people in a study that are overweight or not by their annual income:
+
+```{r table2, echo = FALSE}
+analysis_provided <- read_delim("Assignment-1_Table-2.txt", 
+                                delim = "~",
+                                col_types = list(col_character(),
+                                                 col_integer(),
+                                                 col_integer()))
+knitr::kable(analysis_provided, caption = "Contingency table for relationship between income level and overweight status.")
+```
+
+Perform a test of independence using the chi-squared test and the exact test. Then repeat the tests with each cell frequency multiplied by 10. Comment on the results. 
+
+```{r 2aChi}
+Inc_v_OW.dat <- matrix(c(3,4,2,1), nrow = 2)
+dimnames(Inc_v_OW.dat) = list(c("< $30,000",">= $30,000"),c("Not OW","OW"))
+Inc_v_OW.dat
+
+chisq.test(Inc_v_OW.dat, correct = TRUE)
+fisher.test(Inc_v_OW.dat, alternative = "two.sided")
+```
+
+
+
+```{r 2aChi10}
+Inc_v_OW10.dat <- Inc_v_OW.dat*10
+Inc_v_OW10.dat
+chisq.test(Inc_v_OW10.dat, correct = TRUE)
+fisher.test(Inc_v_OW10.dat, alternative = "two.sided")
+```
+
+
+Talk about some alternatives here from CDA notes.
+
+
+Be sure to appropriately reference the sources that you use to draft the report.
+
+Yates for df = 1
+Cochran for df<5
+Agresti in general
+
+
+# References
