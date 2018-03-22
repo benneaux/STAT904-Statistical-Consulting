@@ -1,0 +1,210 @@
+---
+title: "Assignment 2"
+author: "Benjamin Moran \n c3076448 (University of Newcastle)"
+date: 'Date Generated: `r Sys.Date()`'
+bibliography: References/Ass2.bib
+output:
+  pdf_document: default
+  html_document:
+    df_print: tibble
+    fig_caption: yes
+subtitle: STAT904 Statistical Consulting
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(kableExtra)
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+```
+
+#### Plagiarism Statement 
+No part of this Assignment has been copied from anyone else, and I have not lent any part of it to anyone else.
+
+### Question 1. 
+
+Identify two papers on statistical consulting written since 2008. Write a report summarising the two papers. Include an executive summary of the key points. The total report should be no more than 4 pages. You may not use papers that have been provided for this subject.
+
+#### Paper 1 _Statistical Disclosure Risk: Separating Potential and Harm_
+
+### Question 2.
+A client is describing a medical test (e.g. for pancreatic cancer), and talks about the sensitivity and specificity of the test. What do these terms mean? Give a numerical example to illustrate your answer.
+
+In layman's terms, a test's __Sensitivity__ refers to the probability that it returns a positive result given a patient who has the condition that the test is designed to detect. On the other hand, a test's __Specificity__ is the opposite - the probability that the test returns a negative result given a patient who doesn't have the condition.
+
+When we are speaking about _sensitivity_ and _specificity_ it is often easier to gain an understanding by looking at a simple contingency table displaying the possible outcomes of a diagnostic test.
+
+```{r}
+Q2_cont <- matrix(c("(A) True Positive","(C) False Negative","(B) False Positive","(D) True Negative"), nrow = 2)
+colnames(Q2_cont) = c("Has cancer","Does not have cancer")
+rownames(Q2_cont) = c("Positive Test Result","Negative Test Result")
+kable(Q2_cont)
+```
+
+
+Using the above table we can derive some clearer definitions of sensitivity and specificity.
+
+$$
+\begin{aligned}
+Sensitivity~&= \frac{A}{A+C} = \frac{True~Positive}{True~Positive + False~Negative} \\
+Specificity~&= \frac{D}{D+B} = \frac{True~Negative}{True~Negative + False~Positive}
+\end{aligned}
+$$
+
+_(B) False Positive_ also represents a __Type I Error__: rejecting the null hypothesis (that the patient does not have the condition) when it is actually true. On the other hand, _(C) False Negative_ represents a __Type II Error__: failing to reject the null hypothesis when the alternative is true. The higher a test's _specificity_, the lower the chance of _Type I error_; the higher a test's _sensitivity_, the lower the chance of _Type II error_. Each term can be calculated using the other:
+
+$$
+\begin{aligned}
+Error_{I}~&= 1 - Specifity ~= \frac{False~Positive}{True~Negative + False~Positive}\\
+Error_{II}~&= 1 - Sensitivity ~= \frac{False~Negative}{True~Positive + False~Negative}
+\end{aligned}
+$$
+
+Let's look at a toy example: imagine a perfect test for pancreatic cancer - i.e one that is perfectly _specific_ and perfectly _sensitive_. If we conduct $1000$ of these tests and expect a prevalence rate of $2\%$, this test would return the following results. 
+
+```{r, echo = FALSE}
+Q2_cont <- matrix(c(20,0,0,980), nrow = 2)
+colnames(Q2_cont) = c("Has cancer","Does not have cancer")
+rownames(Q2_cont) = c("Positive Test Result","Negative Test Result")
+kable(Q2_cont)
+```
+
+We can the calcultate the following:
+
+$$
+\begin{aligned}
+Sensitivity~&= \frac{20}{20+0} = 1  \implies Error_{II} = 1 - 1 = 0\\
+Specificity~&= \frac{980}{980+0} = 1 \implies Error_{I} = 1 - 1 = 0,
+\end{aligned}
+$$
+
+as expected. Unfortunately, things don't work like that. Instead, let's imagine a slightly more realistic test that has a specificity of $90\%$, a sensitivity of $75\%$, and a prevalence rate of $2\%$.
+
+```{r, echo = FALSE}
+Q2_cont <- matrix(c(15,5,98,882), nrow = 2)
+colnames(Q2_cont) = c("Has cancer","Does not have cancer")
+rownames(Q2_cont) = c("Positive Test Result","Negative Test Result")
+kable(Q2_cont)
+```
+
+The same calculations yield:
+
+$$
+\begin{aligned}
+Sensitivity~&= \frac{15}{15+5} = 0.75  \implies Error_{II} = 1 - 0.75 = 0.25\\
+Specificity~&= \frac{882}{882+98} = 0.9 \implies Error_{I} = 1 - 0.9 = 0.1,
+\end{aligned}
+$$
+
+as expected. From this we can see that we would expect to see $5$ out of every $1000$ tests return a false positive result given the prevalence, sensitivity and specificity stated above. Additionaly, $98$ out of every $1000$ tests would return a false positive result.
+
+Lastly, in this example we will increase the prevalence rate to $20\%$.
+
+```{r, echo = FALSE}
+Q2_cont <- matrix(c(150,50,80,720), nrow = 2)
+colnames(Q2_cont) = c("Has cancer","Does not have cancer")
+rownames(Q2_cont) = c("Positive Test Result","Negative Test Result")
+kable(Q2_cont)
+```
+
+From this we can see that we would expect to see $50$ out of every $1000$ tests return a false positive result given the prevalence, sensitivity and specificity stated above. Additionaly, $80$ out of every $1000$ tests would return a false positive result. We can see that increased prevalence has reduced the false positive rate and increased the false negativity. Hence, _prevalence_ is an important thing to consider when assessing the specificity and sensitivity of a particular test; the interaction of all three must be considered alongside the context of any intervention/research proposal in order to adequately assess it.
+
+
+### Question 3. 
+A client approaches you for advice about designing a national survey on the use of opioids in Australia. As part of the project you decide that it is worth obtaining some time series data on deaths due to opioids in Australia for a number of years. Write a short report for the client covering (a), (b), (c) and (d).
+
+
+#### (a) How the data were obtained.
+
+The data was obtained from the the _Non-medical use of pharmaceuticals: trends, harms and treatment, 2006-07 to 2015-16 (Australian Institue of Health and Welfare , 2017)_ report [@AIHW] and the supplementary material provided for the report [@AIHWsupp].
+
+#### (b) Plot and summarise the data and comment on it.
+
+```{r}
+library(xlsx)
+library(tidyr)
+files <- list.files("Data",
+                    pattern = ".xlsx", 
+                    full.names = TRUE)
+opioid.dat <- read.xlsx(files[[1]],
+                        sheetName = "Table S16",
+                        startRow = 2,
+                        endRow = 10,
+                        header = TRUE)[-2,]
+colnames(opioid.dat) <- str_replace_all(colnames(opioid.dat),"X","")
+kable(opioid.dat, 
+      caption = "Table S16 - AIHW 2017 Supplementatry Report Data",
+      format = "latex",
+      booktabs = T) %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
+```
+
+```{r}
+
+opioid.dat <- opioid.dat %>% 
+  gather(Year, No.Deaths, -1) %>% 
+  mutate(Year = as.integer(.$Year))
+
+ggplot(data = opioid.dat, 
+       aes(x = Year, y = No.Deaths, colour = Cause.of.death)) +
+  geom_line(size = 1) +
+  geom_point() +
+  theme_minimal() +
+  labs(colour = "COD") +
+  theme(legend.position = "bottom",
+        legend.text = element_text(size = 8))
+```
+
+
+
+
+#### (c) What is your prediction of the number of deaths for the next year - give both a point and an interval prediction.
+
+```{r}
+library(forecast)
+opioid.ts = ts(subset(opioid.dat, Cause.of.death == "All opioids")[[3]], start = 1999, end = 2016)
+
+fit <- auto.arima(opioid.ts)
+fit.forecast = forecast(fit,h=2)
+plot(fit.forecast)
+```
+
+
+#### (d) What size sample of people would be needed to estimate the proportion of people using opioids in the last 12 months with a margin of error of 1 percentage points? The margin of error is approximately 2 times the standard error of an estimate.
+
+The calculation is fairly straight forward. The sample margin of error (MOE) is defined as:
+
+$$
+MOE = 2 \sqrt{\frac{p(1-p)}{n}} \implies n = \left(\frac{p(1-p)}{\left(\frac{MOE}{2}\right)^2} \right)
+$$
+
+Setting the $MOE = 0.01$, we can then simulate values for $n$ given a range of possible values for the proportion $p \in [0,1]$. Thanks to the $p(1-p)$ term, the resulting values for $n$ will be symmetric, with the maximum occuring where $p = 0.5$.
+
+```{r}
+library(purrr)
+pop.dat = seq(from=0, to = 1, by = 0.001)
+
+sampsize = function(p, moe= 0.01){
+  ((p*(1-p)/(moe/2)^2))
+  # ninv = ((moe/2)^2)/(p*(1-p))
+  # ninv^(-1)
+}
+
+nvals = round(map_dbl(pop.dat, sampsize, moe = 0.01))
+
+plot.df <- data.frame(prop = pop.dat*100, n =  nvals)
+
+ggplot2::ggplot(data = plot.df, aes(x = prop, y = n)) + 
+  geom_line() + 
+  theme_minimal() + 
+  geom_point(aes(x = 50, y = max(n)), colour = "red") +
+  geom_vline(xintercept = 50, lty = 2, colour = "grey") +
+  labs(x = "Proportion (%)",
+       y = "Req. Sample Size",
+       main = "Sample Size for MOE of 1% by Usage Proportion")
+
+```
+
+The ... estimates that $3.6\%$ of survey participants reported _"misuse of pain-killers/opioids"_ [@AIHW2017b]. Whilst not perfect, we can use this as an rough estimate of our $p$. Plugging this in we find that the sample will need to be at least `r round(sampsize(0.036))` to obtain the required MOE.
+
+# References

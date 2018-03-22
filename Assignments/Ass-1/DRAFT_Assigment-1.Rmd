@@ -1,0 +1,409 @@
+---
+title: "Assignment 1"
+author: "Benjamin Moran \n c3076448 (University of Newcastle)"
+date: 'Date Generated: `r Sys.Date()`'
+bibliography: Ass1.bib
+output:
+  pdf_document: default
+  html_document:
+    df_print: tibble
+    fig_caption: yes
+subtitle: STAT904 Statistical Consulting
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+#### Plagiarism Statement 
+No part of this Assignment has been copied from anyone else, and I have not lent any part of it to anyone else.
+
+### Question 1
+A researcher from the Nursing Department approaches you concerning her research. She has read a paper giving some results of an analysis of the relationship between the HSC (final year high school) results and the results in a first year university Nursing course. The correlations are given below.
+
+```{r table1, echo = FALSE}
+analysis_provided <- read_delim("Data/Assignment-1_Table-1.txt", 
+                                delim = ",",
+                                col_types = list(col_character(),
+                                                 col_double(),
+                                                 col_double(),
+                                                 col_double(),
+                                                 col_double(),
+                                                 col_double(),
+                                                 col_integer()))
+knitr::kable(analysis_provided, 
+             caption = "Output of some analysis provided by the researcher")
+```
+
+She asks you to analyse these correlations. She seems interested in how the HSC scores predict university results and whether there was any change between the two years.
+
+#### a) What more would you want to know about the study?
+
+I have a number of questions about the study that I will break down into smaller sections to deal with more clearly.
+
+##### Questions about the sample
+
+* Does the sample contain every student who was enrolled in the nursing course?
+* Is there any structural component present in the data: i.e. clusters of schools, public vs. private schools, local vs. regional students. If so, did the original researchers consider this in their experimental design process and how did they address it.
+* Did the researchers exclude students who do not have a HSC score (i.e they completed the IB or are international students) OR did they attempt to account for this by mapping scores? What map did they use?
+* Did the researchers include students who completed NEWSTEP or some other pathway to university outside of the main secondary education system that still requires students to sit the HSC? Was this accounted for in the analysis? Should this be considered a structural component of the sample?
+* How were all the variables recorded? What types of variable were recorded? Were they the correct variable types for the data? (i.e. were categorical variables recorded as continuous variables etc.)
+
+##### Questions about the comparison
+
+* Was there a change to the ATAR cutoff for the course between 2013 and 2014, thereby changing the pool of students that are eligible for entrance to the Bachelor program?
+* Were there any changes to some other policy or policies that would have an effect on university enrollments such as incentives for local or regional students or other financial insentives that would encourage students to enrol who would not have previously?
+* Was there a major change to the HSC, one that would cause a change in the marks that otherwise comparable students would receive. Whilst unlikely - by which I mean a major change affecting a major shift in marks - it is still something to check.
+* Was there a change to the nursing program? Did the course pathway change in a way that may affect the work load imposed on new students.
+* How was the comparison calculated? Was an individual student's mark in the HSC compared to their final marks from both semesters or some kind of average across the two semesters? The HSC has two component parts: the final exam and coursework marks. Did the researchers compare like for like? Did they weight one or the other component more? (They may not have access to this information, depending on where they go their data.)
+
+##### Questions about the study
+
+* Who conducted the study originally?
+* Did they provided their data alongside their paper? Replicating their correlations from the original data would be preferable.
+* Did they detail their analysis in the paper and - if so - how much detail did they include? Is it replicable from what is available? Is is replicable if we were to contact the authors (i.e. did they promise access to their data on request)?
+* Has the paper been published? Has it been peer-reviewed? Is it still in review stage?
+* Did they include details of the variability/credible or confidence intervals in the results section of their report?
+* Did they complete the analysis we are being asked to complete? Did they publish the results?
+
+##### Questions about the request
+
+* What does the researcher who has requested this work think of the paper?
+* What does she think is being reported? Do we have a common understanding/interpretation of the meaning of these results and does that agree with what is described in the paper?
+
+Whilst not every point listed above is equally important, they each circle around three main themes: how the researchers collected the data; how they analysed the data and how they reported the data. The component parts of the provided correlations (i.e. the data collection and analysis process) are important for us to consider both whether our methods are correct and whether their results are truly descriptive of the underlying correlations. The reporting process is important to understand because the study may in fact answer the researchers questions without her being aware of it. The content of the report also may not actually support the analysis being request in the context of what the outcome of that analysis would mean. Before beginning we should agree on what the report truly says, what the analysis will test and what the results will mean and document this. We should also state conditions for failure and success.
+
+#### b) Carry out the required analysis and write a short report. Include any qualifications you think should be made concerning the analysis. 
+
+To compare Pearson correlations (r) we will need to transform the coefficients using Fisher's z-transformation [@Fisher1915] because the coefficients are not normal random variables, instead they are linear measures of correlation that range between $-1$ (total negative correlation) and $1$ (total positive correlation), with $0$ representing no correlation.
+
+The particular method we use will depend on whether these correlations are _independent_ or _dependent_. Because the two student groups (2013 and 2014) are different samples then I would consider the _independent_ method. However, any structural issues within the samples may complicate this.
+
+The null hypothesis here is that the Pearson's coefficient from the first year ($r_1$) minus the coefficient from the second ($r_2$) equals $0$. We can construct confidence intervals by transforming the variables and the calculating a value derived from the standard error of each year's data ($1/\sqrt(N-3)$) and the z-score corresponding to each r. (See code).
+
+To conduct the analysis I will use some code from __Thom Baguley__ [@baguley_2012].
+
+```{r Q1_Data}
+library(tidyverse)
+measures = c("HSC*GPA","HSC*Bio","HSC*GenSci","HSC Eng*GPA","HSC Bio*Bio")
+test_2013 <- c(.41, .36, .30, .30, .37)
+test_2014 = c(.37, .32, .26, .12, .45)
+n_2013 <- 109
+n_2014 <- 85
+```
+```{r Q1_functions}
+# Function to return CIs for Pearson Correlations
+rz.ci <- function(r, N, conf.level = 0.95) { 
+  zr.se <- 1/(N - 3)^0.5 # SE for Z score
+  moe <- qnorm(1 - (1 - conf.level)/2) * zr.se
+  z <- atanh(r) # could use psych::fisherz() here
+  zu <- atanh(r) + moe 
+  zl <- atanh(r) - moe
+  tanh(c(zl, zu))
+}
+# function to calculate CIs for the difference. Uses above function.
+r.ind.ci <- function(r1, r2, n1, n2, conf.level = 0.95) {
+  L1 <- rz.ci(r1, n1, conf.level = conf.level)[1]
+  U1 <- rz.ci(r1, n1, conf.level = conf.level)[2]
+  L2 <- rz.ci(r2, n2, conf.level = conf.level)[1]
+  U2 <- rz.ci(r2, n2, conf.level = conf.level)[2]
+  diff <- r1 - r2
+  lower <- r1 - r2 - ((r1 - L1)^2 + (U2 - r2)^2)^0.5
+  upper <- r1 - r2 + ((U1 - r1)^2 + (r2 - L2)^2)^0.5
+  c(lower, upper, diff)
+}
+```
+
+```{r Q1_Analysis}
+
+results <- data.frame(matrix(NA, nrow = 5, ncol = 3))
+for(i in 1:length(test_2013)){
+  r1 = test_2013[i]
+  r2 = test_2014[i]
+  n1 = n_2013
+  n2 = n_2014
+  results[i,] = r.ind.ci(r1,r2,n1,n2)
+}
+
+results <- cbind(results,measures) %>% select(4,1:3) 
+colnames(results) <- c("Corr","Lower","Upper", "diff")
+kable(results)
+```
+
+Plotting the data will help us understand the data better. Note: CIs that include $0$ imply that we do not have enough evidence to reject the null hypothesis at the specified $\alpha$.
+
+```{r Q1_plot, echo = -1}
+cols <- c("Diff\nr1 - r2"="red","95% CI"="black")
+ggplot(data = results, 
+       aes(x = Corr)) +
+  geom_hline(yintercept = 0,
+             col= "grey", 
+             lty = 2) +
+  geom_point(aes(y = diff,
+                 colour ="Diff\nr1 - r2"),
+             size = 4) +
+  geom_linerange(aes(ymin = Lower,
+                     ymax = Upper,
+                     colour = "95% CI"),
+                 size = 1) +
+  theme_linedraw() +
+  theme(panel.grid.major = element_line(colour = "lightgrey"),
+        panel.grid.minor = element_line(colour = "lightgrey")) +
+  ggtitle(label = "Conf. Ints for Independent Correlation Comparisons",
+          subtitle = "HSC v. B(Nurse) GPA, 2013 & 2014") +
+  ylab("Difference 2013 v. 2014 (rho)") +
+  xlab("Measures") +
+  scale_colour_manual(name = element_blank(), 
+                      values = cols,
+                      guide = guide_legend(override.aes = list(
+                        linetype = c("solid", "blank"),
+                         shape = c(NA, 16))))
+```
+
+From this we can see that each confidence interval contains $0$, so we fail to reject the null hypothesis in this instance. The only result that looks remotely strange is the values reported for the `HSC Eng*GPA` correlation, but which still doesn't reach significance. We can confirm these results using the `psych::paired.r` function to calculate actual p-values.
+
+```{r}
+library(psych)
+results <- data.frame(matrix(NA, nrow = 5, ncol = 2))
+for(i in 1:length(test_2013)){
+  xy = test_2013[i]
+  xz = test_2014[i]
+  n = n_2013
+  n2 = n_2014
+  paired_r <- paired.r(xy,xz,NULL,n,n2)
+  results[i,1] = paired_r$z
+  results[i,2] = paired_r$p
+}
+results <- cbind(results,measures) %>%
+  select(3,1,2) 
+colnames(results) <- c("Corr","Z","p-value")
+kable(results)
+```
+
+For each measure, the reported p-value is well clear of any significance level we might reasonable set so we will fail to reject the null hypothesis and conclude that there is no evidence of a statistically significant difference between the reported correlations for each measure between the 2013 and 2014 student sample cohorts. Thus, there is no evidence to suggest a change between 2013 and 2014. 
+
+It is much simpler to assess if the correlations themselves are significant and we can use part of the code above to do it. The `rz.ci` function will calculate the confidence intervals for each reported $r$ value and the `psych::r.test` function will calculate the p-value.
+
+```{r}
+r_2013_p = data.frame()
+r_2014_p = data.frame()
+for(i in 1:length(test_2013)){
+  x = rz.ci(r = test_2013[i],
+            N = n_2013)
+  xp = r.test(n = n_2013, 
+              test_2013[i])$p
+  y = rz.ci(r = test_2014[i],
+            N = n_2014)
+  yp = r.test(n = n_2014,
+              test_2014[i])$p
+  r_2013_p = rbind(r_2013_p, c(test_2013[i], xp, x[1],x[2]))
+  r_2014_p = rbind(r_2014_p, c(test_2014[i],yp, y[1],y[2]))
+}
+r_2013_p = cbind(r_2013_p, measures, rep(2013, 5))
+r_2014_p = cbind(r_2014_p, measures, rep(2014, 5))
+c_names = c("r","p-value","Lower CI", "Upper CI", "Measure","Year")
+colnames(r_2013_p) = c_names
+colnames(r_2014_p) = c_names
+r_all_p = rbind(r_2013_p, r_2014_p)
+kable(r_all_p[,c(5:6,1:4)])
+```
+
+The only measure reporting an insignificant p-value is the `HSC Eng*GPA` correlation from the 2014 sample group; all others produce significant results. Therefore we have evidence to suggest that we can reject the null hypothesis and confirm that all bar one of the correlations are significant. However, the previous section showed that we do not have evidence to suggest that the correlations from each year should be treated as being different (Note however that the `HSC Eng*GPA` measure does produce the most abnormal result in the first test). Ideally, the researchers could collect an additional years worth of data to see if the issue is resolved by increasing the avaialable information.
+
+#### c) The researcher is planning to carry out her own study. Write a brief report on how she should plan and analyse her study.
+
+Planning and then carrying out an analysis project comparable to the previously discussed data will require us to detail a few important things prior to starting. 
+
+##### Preparation
+
+We will need to clearly define the question that is being asked, because this will determine everything that comes after. For example, if the question is "Has there been a change in the correlation between HSC marks and first year GPA of university students enrolled in the Bachelor of Nursing program at this university", then we will need to consider a number of disparate factors when designing both the study and the analysis, primarily because the phrase 'change in correlation' in the question above is left uncontextualised.
+
+A better question might be "Has there been a change in the correlation between HSC marks and first year GPA university students _from public compared to private schools_ enrolled in the Bachelor of Nursing program at this university". This question defines a key part of analysis we will conduct (the structural make-up of the sample group) and makes it much more simple to define both the analysis and the measure of success. Other issues will still need to be addressed in the experimental design phase (e.g. how do we define both the HSC and GPA? Do we consider them to be single marks or do we weight by classroom vs. exam components), but we have more clearly stated a particular hypothesis concerning a factor that might change the variable (i.e. the correlation) under examination.
+
+##### Study Design
+
+When addressing the study design we will need to define all of the variables involved to ensure that the way we categorise each variable is germane to the analysis method we have chosen. For example, we would not want to collect school information as anything other than a nominal variable, but if we wanted to take into account some form of school ranking system then we may need to add an ordinal variable to record this rank. School marks in the HSC are ordinal (I believe) whereas GPA may not be (I know what GPA is but I must admit that the way we could link it to a HSC mark escapes me at the moment). At the very least we would need to explicitly state how we are going to map one set of possible marks (HSC) onto another (GPA) and build up a justification for that approach, either theoretically or with reference to other publications.
+
+After we have done this we can confirm the method of analysis. The previous study calculated Pearson's coefficients for each correlation. If we intend to do the same we will need to ensure that: our input variables are appropriate for this type of analysis; that the question implied by the analysis is the same as the one we developed in the preparation stage, and; that the result of the analysis actually answers the question we are asking (although these last two are linked).
+
+With these all in mind we need to also specify conditions for 'success' and 'failure': what constitues a statistically significant change in correlation (what is our $\alpha$)? How will we measure the difference between the different school types (for instance) across the two or more years of data that we will analyse? How will we deal with outliers (possibly relevant when looking at the reported correlation for `HSC Eng*GPA` in 2014)? How will we deal with missing data and errors? 
+
+If we are attempting to replicate the results show by the previous researchers, then performing a similar analysis to produce Pearson correlation coefficients using a two.sided correlation test (`stats:cor.test` or `pysch::corr.test` in `r`). We could test the hypothesis that the correlations have changed using different formulation depending on whether the samples are independent (not stratified by school) or dependent (stratified). Indeed, the dependence structure should be made explicit in the preparation phase as it is integral to the question being asked. We should also take care to display correlation results graphically (scatter-plots work well for correlations).
+
+We could also employ a number of different clustering techniques, depending on the structural properties of the samples.
+
+##### Ethics Approval
+
+Once we have specified all of the above we will need to apply for ethics approval along the lines laid out by our employers (the university in this instance). This ethics application will need to include all of the information discussed above and as such represents the last chance to change it.
+
+##### Analysis
+
+After the data collection process is complete we will need to devote time to cleaning the data and putting it into a useable format. All of the steps we take in this cleaning stage will need to be documented for publication. After cleaning, the analysis that was agreed upon initially will be conducted and the results reported with respect to the conditions laid out in the ethics application. 
+
+Changes to the analysis at this stage would amount to fundamentally changing the question that is being answered and so may need to be reapproved by ethics. Interesting results could be further explored in the context of the original question, but changing the parameters at this stage would be inadvisable for a number of reasons.
+
+### Question 2
+
+A very common and widely applicable analysis method is the chi-squared test of independence. Write a report that covers the following:
+
+#### a) Briefly describe the test, including a discussion of when it is should be used.
+
+Pearson's $\chi^2$ test statistic measures the strength of the association between the two categorical variables (the row and column entries) of a contingency table. For an $I\times J$ contingency table (i.e. with $I$ rows and $J$ columns), it can be expressed as:
+
+$$
+X^2 = \sum\limits^I_{i=1}\sum\limits^J_{j=1}\frac{\left(n_{ij} - \frac{n_{i\bullet}n_{\bullet j }}{n} \right)^2}{\frac{n_{i\bullet}n_{\bullet j }}{n}},
+$$
+where $n$ is the sum of the cell frequencies of the contingency table, $n_{ij}$ is the frequenc_ for the cell $ij$, and $n_{i \bullet}$ and $n_{\bullet j}$  are the marginal frequencies for the $i'th$ row and $j'th$ column respectively.
+
+Also, note that there are simplified expressions for $2\times 2$ contingency tables that may make it easier to intuit. See Agresti [@Agresti2002].
+
+The hypothesis for the test is that:
+
+\begin{equation}
+H_0: n_{ij} = n_{i\bullet} n_{\bullet j} \\
+H_1: n_{ij} \neq n_{i\bullet} n_{\bullet j}
+\end{equation}
+
+I.E. $H_0$ implies that the expected value of cell $i,j$ is equal to the product of the $i^{th}$ marginal row frequency and the $j^{th}$ marginal column frequency. This would imply that a change in one variable 
+
+As hinted at above, the test should be used when comparing the association between two sets of categorical data. It tells us whether or not two categorical variables are dependent; whether or not an association structure exists between them. Whilst we will be looking specifically at an example involving a $2\times 2$ contingency table, the test can be used in any $I \times J$ contingency table without issue. Other measures of association exist for the same type of problem, such as the Odds Ratio and the family of OR measures defined by the Edward's Criteria. Cressie and Read [@cressie1984multinomial] described a family of chi-squared measures, to which Pearson's belongs. They also showed that Pearson's statistic performed reasonably well enough for us not to worry about diverging from it.
+
+Still more extensions exist for more complicated contingency tables with different association structures (Goodman-Kruskal tau index)[@goodman1959measures], and for three-way contingency tables (the three-way chi-squared test for three predictor variables; the Marcotorchino index [@marcotorchino1985utilisation] for two independent predictors etc.). All share the same D.N.A (so to speak) and will be familiar to anyone who has knowledge of the derivation of Pearson's statistic. 
+
+#### b) Many computer packages will give a warning message if the expected frequencies in some cells are less than 5. Briefly explain why this warning is given and what options are available for dealing with it.
+
+The reason for the warning is a violated assumption of the $\chi^2$ test. We assume that the cell frequencies constitute a single observation of a multivariate distrubution that is _approximately normal_. When the number of cells with an expected value less that $5$ constitute more than $80\%$ of the total number of cells, then the approximation is thought to be too poor to adequately describe the underlying distribution.
+
+More formally, the normalised difference between the _observed_ and _expected_ counts of a contingency table $\frac{O_i- E_i}{\sqrt{E_i}}$ is an approxiately normally-distributed random variable, which in turn implies that the sum of squares of this variable is approximately chi-squared. If the difference between the observed frequencies $O_i$ and the expected frequencies $E_i$ is too small, then - as shown by Yates [@yates1934contingency] - it follows that the approximation to the normal distribution would be poor. That in turn would make the approximation of the $\chi^2$ distribution poor. Because Pearson's test relies on approximating the $\chi^2$ value based on the approximate normality of the sum of squares difference between the observed and expected cell frequencies, computer programs will often use this cutoff for assessing the accuracy of reported results.
+
+Fisher's Exact test doesn't have the same issue because - rather than by approximation - it relies on the ability to calculate _exactly_ the requisite p-values via the _hypergeometric distribution_ [@Fisher1915].
+
+One way to deal with the issue is to run simulations on a contingency table with fixed marginal frequencies. By generating - for example - 10000 contingency tables conditioned on the marginal frequencies of the data provided (in the same way that Fisher's Exact Test does), we can then generate confidence intervals and p-values associated with the given data. See below.
+
+```{r}
+library(broom)
+Inc_v_OW.dat <- matrix(c(3,4,2,1), nrow = 2)
+dimnames(Inc_v_OW.dat) = list(c("< $30,000",">= $30,000"),c("Not OW","OW"))
+
+x2_samp <- chisq.test(Inc_v_OW.dat, simulate.p.value = TRUE, B = 10000)
+x2_samp
+```
+
+This however still does not produce a sensible p-value. Another method is described in the documentation for the `stats::r2dtable` function, which I have adopted here to use the provided data. The method will "Simulate permutation test for independence based on the maximum Pearson residuals (rather than their sum)" [@RCoreTeam2017]
+
+```{r}
+rowTotals <- rowSums(Inc_v_OW.dat)
+colTotals <- colSums(Inc_v_OW.dat)
+nOfCases <- sum(rowTotals)
+expected <- outer(rowTotals, colTotals, "*") / nOfCases
+maxSqResid <- function(x) max((x - expected) ^ 2 / expected)
+simMaxSqResid <- sapply(r2dtable(1000, rowTotals, colTotals), maxSqResid)
+sum(simMaxSqResid >= maxSqResid(Inc_v_OW.dat)) / 10000
+```
+
+This method agrees with the previous one, but it is still not much use to us. Apart from moving onto Fisher's Exact Test (which we'll do in the next part), one other strategy is available to us: we should try to collect more data.
+
+#### c) Suppose we have the following table giving the number of people in a study that are overweight or not by their annual income:
+
+```{r table2, echo = FALSE}
+analysis_provided <- read_delim("Data/Assignment-1_Table-2.txt", 
+                                delim = "~",
+                                col_types = list(col_character(),
+                                                 col_integer(),
+                                                 col_integer()))
+knitr::kable(analysis_provided, caption = "Contingency table for relationship between income level and overweight status.")
+```
+
+Perform a test of independence using the chi-squared test and the exact test. Then repeat the tests with each cell frequency multiplied by 10. Comment on the results. 
+
+Firstly, we will conduct the analysis on the original contingency table.
+
+```{r 2aChi_data, include = FALSE}
+library(broom)
+Inc_v_OW.dat <- matrix(c(3,4,2,1), nrow = 2)
+dimnames(Inc_v_OW.dat) = list(c("< $30,000",">= $30,000"),c("Not OW","OW"))
+Inc_v_OW.dat
+```
+
+When conducting the $\chi^2$ test, we need to consider using the _Yates Continuity Correction_ [@yates1934contingency]. The `stats::chisq.test` in `R` will apply it automatically for $2\times 2$ contingency tables, but its use should be assessed each time because it will tend to produce more conservative results (by design) than a test without the correction. Yates [@yates1934contingency] recommended the test be used when at least one of the cells of the contingency table has an expected value that is less than $5$, so we should check the expected values before proceeding. 
+
+```{r 2aChi_chiexpval}
+kable(chisq.test(Inc_v_OW.dat)$expected)
+```
+
+They are all less than $5$, so we will use it in this case. Now the analysis, with `correct=TRUE` (although - as stated previously - it is applied by default).
+
+```{r 2aChi_chi}
+pvals_chi <- qchisq(c(0.025,0.975),1)
+x2 <- tidy(chisq.test(Inc_v_OW.dat,
+                      correct = TRUE)) %>% 
+  cbind(t(pvals_chi))
+kable(x2[,c(1,2,3,5,6,4)],
+      row.names = FALSE,
+      col.names = list("X2","p-value","df",
+                       "Lower CI",
+                       "Upper CI",
+                       "method"))
+```
+
+For the exact test, we need to specify whether or not the test should be one-sided or two. Nothing in the question mentions a hypothesis that the expected mean value for one category is greater or less than the other, so we should assume that we are testing for _any difference_ and should therefore use a two-sided test. (Note: if conducting the analysis myself, I would ask for more information, obviously).
+
+The `stats::fisher.test` in `R` will do the test for us - we can specify the two-sided test using `alternative="two.sided"`.
+
+```{r 2aChi_exact}
+ex <- tidy(fisher.test(Inc_v_OW.dat,
+                       alternative = "two.sided"))
+kable(ex, 
+      row.names = FALSE,
+      col.names = list("Odds Ratio","p-value",
+                       "Lower CI",
+                       "Upper CI",
+                       "method","alternative"))
+```
+
+The output statistic of Fisher's Exact Test [@Fisher1915] is an estimate of the Odds Ratio, which is always positive. The direction of association (whether positive or negative) is determined by the value of the Odds Ratio with respect to $1$; when the Odds Ratio is equal to 1, then we conclude that there is no evidence for any association between the variables. As such, when the confidence interval includes $1$, we will usually not have enough evidence to confirm any association.
+
+In the reported results we can see that the estimated $OR = 0.4142118458$ - implying that individuals in the higher income bracket are _less_ likely to be overweight - but we can also see that the $1-\alpha_{0.05}$ confidence interval ranges from $0.00511109$ to $11.79985528$ - an interval that includes $1$. This is why the reported p-value is so high.
+
+```{r 2aChi10data}
+Inc_v_OW10.dat <- Inc_v_OW.dat*10
+Inc_v_OW10.dat
+```
+
+When performing the same analysis on the data multiplied by a factor of $10$, we should note that Fisher's $\chi^2$ statistic scales linearly with the sample size, which implies that even the most minor associations can be shown at the required significance level, provided that there are enough samples. Thus, we should expect to see a change in results, though first we should check to see if we need to use _Yates' Continuity Correction_.
+
+```{r 2aChi10_chiexpval}
+kable(chisq.test(Inc_v_OW10.dat)$expected)
+```
+
+As we can see, none of the expected values are less that $5$, so we could specify `correct = FALSE`, but for illustrative purposes I will run the test twice with both settings.
+
+```{r 2aChi10_chi}
+x2_10 <- rbind(tidy(chisq.test(Inc_v_OW10.dat, 
+                               correct = FALSE)),
+               tidy(chisq.test(Inc_v_OW10.dat,
+                               correct = TRUE))) %>% 
+  cbind(t(pvals_chi))
+kable(x2_10[,c(1,2,3,5,6,4)], 
+      row.names = FALSE,
+      col.names = list("X2","p-value","df",
+                       "Lower CI",
+                       "Upper CI",
+                       "method"))
+```
+
+We can see the conservative effect of the correction in both the reported p-values and $X^2$ estimates; however, both report statistically significant results for $\alpha = 0.05$.
+
+```{r 2aChi10_exact}
+ex_10 <- tidy(fisher.test(Inc_v_OW10.dat, 
+                          alternative = "two.sided"))
+ex_10
+```
+
+The p-value reported by Fisher's Exact test is much more conservative - although still significant at $\alpha = 0.05$ - than the value reported by the non-continuity corrected Pearson test; it is approximately equal to the overly conservative test with Yate's continuity correction applied. For this reason - when there is enough data available to us - we should side with the non-continuity corrected Pearson test.
+
+For a more in-depth discussion of matters related to Pearson's $\chi^2$ test, Fisher's Exact test, Odds Ratios and other measures of contingency in general see _Categorical Data Analysis_ by Alan Agresti [@Agresti2002] and _Correspondence analysis: theory, practice and new strategies_ by Eric Beh and Rosaria Lombardo [@beh2014correspondence].
+
+# References
