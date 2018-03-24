@@ -1,0 +1,59 @@
+---
+title: "Assignment 8"
+author: "Benjamin Moran \n c3076448 (University of Newcastle)"
+date: 'Date Generated: `r Sys.Date()`'
+# bibliography: AssX.bib
+output:
+  pdf_document: default
+  html_document:
+    df_print: tibble
+    fig_caption: yes
+subtitle: STAT904 Statistical Consulting
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+```
+
+#### Plagiarism Statement 
+No part of this Assignment has been copied from anyone else, and I have not lent any part of it to anyone else.
+
+# Question 1
+A client consults you about an investigation that she proposes to run. She wants to look at a numerical quantity measured on the leg muscles of rats that have been on one of four diets. These diets are (polyunsaturated fat, low protein), (polyunsaturated fat, high protein), (monounsaturated fat, low protein) and (monounsaturated fat, high protein). She is interested in knowing which diet maximizes the quantity measured on the muscles. She has come to see you for advice on conducting the experiment and, in particular, on what ''sample size'' she needs.
+
+Write a report of two to three pages on the information you would seek from the researcher and how you would use this information to guide you in planning the experiment.
+
+# Question 2
+In a study of the effectiveness of different training programmes 46 telephone enquiry officers who handle enquiries for an insurance company are selected and randomly allocated to 5 treatment groups. Each group is given a specified amount of training. The scores obtained on a competency test at the end of the training is recorded and given below. Maximum possible mark is 80.
+
+```{r}
+if("Data" %in% list.files()){
+training.dat <- t(read.delim("Data/training.txt", header = FALSE, sep = ","))
+} else {
+training.dat <- t(read.delim("Assignments/Ass-8/Data/training.txt", header = FALSE, sep = ","))
+}
+c_names = training.dat[1,]
+training.dat = as.data.frame(training.dat[-1,], row.names = FALSE)
+colnames(training.dat) = c_names
+
+kable(training.dat)
+```
+
+## (a)
+Is this an experiment or observational study? Briefly give reasons for your answer.
+
+## (b)
+List 8 questions that you would ask about the study.
+
+## (c)
+Suggest 3 ways in which the design of the study could have been improved.
+
+## (d)
+Carry out an analysis of the data and write a report of about 4 pages on the analysis that you conducted and your interpretation of the results. You may attach relevant computer output as an appendix, clearly labelled.
+
+## (e)
+Suppose that instead of the study design described above, the results obtained correspond to a study in which the company has 5 different offices and each office is given a different specified amount of training. How would your conclusions be affected?
+
+# References

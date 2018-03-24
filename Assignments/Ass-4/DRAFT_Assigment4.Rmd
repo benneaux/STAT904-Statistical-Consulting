@@ -1,0 +1,45 @@
+---
+title: "Assignment 4"
+author: "Benjamin Moran \n c3076448 (University of Newcastle)"
+date: 'Date Generated: `r Sys.Date()`'
+# bibliography: AssX.bib
+output:
+  pdf_document: default
+  html_document:
+    df_print: tibble
+    fig_caption: yes
+subtitle: STAT904 Statistical Consulting
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+#### Plagiarism Statement 
+No part of this Assignment has been copied from anyone else, and I have not lent any part of it to anyone else.
+
+# Question 1
+
+Provide a list of 4 books on statistical consulting and details on how to obtain them.
+
+# Question 2
+
+The following data give the readings of the variables High Density Lipoprotein (HDL) total Cholesterol (CHOL) and total Triglyceride (TRI) concentration and the presence or absence of Sinking Pre-Beta taken from 42 subjects.
+
+```{r}
+if("Data" %in% list.files()){
+chol.dat <- read.delim("Data/cholesterol.txt", header = TRUE, sep = ",")
+} else {
+chol.dat <- read.delim("Assignments/Ass-4/Data/cholesterol.txt", header = TRUE, sep = ",") 
+}
+
+```
+
+The client wishes to investigate the possible relationship between HDL and the three variables CHOL, TRI and SPB.
+
+## (a) List 6 questions that you would ask the client at the first meeting.
+## (b) Analyse the data and write a report for the client.
+
+# References

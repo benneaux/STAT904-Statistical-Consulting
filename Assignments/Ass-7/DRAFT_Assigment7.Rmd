@@ -1,0 +1,72 @@
+---
+title: "Assignment X"
+author: "Benjamin Moran \n c3076448 (University of Newcastle)"
+date: 'Date Generated: `r Sys.Date()`'
+# bibliography: AssX.bib
+output:
+  pdf_document: default
+  html_document:
+    df_print: tibble
+    fig_caption: yes
+subtitle: STAT904 Statistical Consulting
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+```
+
+#### Plagiarism Statement 
+No part of this Assignment has been copied from anyone else, and I have not lent any part of it to anyone else.
+
+# Question 1
+
+A client comes to you for assistance in analysing an experiment. The experiment is designed to examine the effect of a particular drug. Twenty rats are selected and randomly allocated to 2 treatment groups. The rats in one group are not given any of the drug; the other rats are given a dose $(0.1\mu g)$ of the drug. The ratio of each rat's activity level for a 10 minute period before being injected and a 10 minute period after receiving the drug were calculated and are shown below in percentage terms.
+
+```{r}
+if("Data" %in% list.files()){
+rats.dat <- read.delim("Data/rats.txt", header = TRUE, sep = ",")
+} else {
+rats.dat <- read.delim("Assignments/Ass-7/Data/rats.txt", header = TRUE, sep = ",") 
+}
+
+kable(rats.dat)
+```
+
+## (a) 
+Analyse the effect of the drug. Write a short report.
+
+## (b)
+Make two suggestions for exploratory analyses the client should do using the raw data.
+
+## (c)
+After further discussion with the client it become apparent that only 10 rats were used and the data given are two observations for each rat. The control group gives measurements where the rats are injected with a placebo. Reanalyse the data and give an updated report. Include a short explanation of why it is important to take account of the fact that the data refers to paired measurements and that the pairing is done correctly.
+
+## (d)
+Calculate the sample size needed in a further experiment that will use separate rats in each treatment group if we want a power of 0.80 of detecting a 10% increase in activity ratio due the drug.
+
+## (e) 
+Name two non-parametric analysis methods could be used to analyse the data and explain under what circumstance we might use them. Assume 20 different rats were used in the experiment.
+
+## (f) Keep a record of the time that you spent on this problem. Add two hours for the discussions with the client. Take what you think you deserve your hourly rate of pay to be and triple it to give an estimated cost for the project.
+
+# Question 2
+Suppose a client comes to you with the results of a 4x2 factorial experiment asking advice on how to analyse it. She is particularly concerned that some outliers may be affecting the results.
+
+## a)
+What questions would you ask the client?
+
+## b)
+There is some suggestion that the standard assumptions of ANOVA are not fulfilled, such as homogeneity of variance and normality. Clearly define what the statistical model underpinning ANOVA is, including these assumptions.
+
+## c) 
+What methods would you suggest to check for Homogeneity of Variances and Non-normality?
+
+## d) 
+What options can you propose for the analysis if you think the standard assumptions are not valid?
+
+## e) 
+Write a short report for the client on how to do the tests and how to do the analyses.
+
+# References

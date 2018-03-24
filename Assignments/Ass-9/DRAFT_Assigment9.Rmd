@@ -1,0 +1,29 @@
+---
+title: "Assignment 9"
+author: "Benjamin Moran \n c3076448 (University of Newcastle)"
+date: 'Date Generated: `r Sys.Date()`'
+# bibliography: AssX.bib
+output:
+  pdf_document: default
+  html_document:
+    df_print: tibble
+    fig_caption: yes
+subtitle: STAT904 Statistical Consulting
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+#### Plagiarism Statement 
+No part of this Assignment has been copied from anyone else, and I have not lent any part of it to anyone else.
+
+# Question 1
+Locate an academic journal paper or report published in the last 10 years that uses statistical methods. Briefly summarise the paper and provide an assessment of it using the list of questions provided in the notes and any other questions or issues that occur to you. Include issues that are not necessarily contained in the paper and questions you would like answered about the research described. Write about 3 pages. Be sure to properly reference the paper or report and where it can be found.
+
+# Question 2
+An experiment is planned in NSW to determine how much providing roof insulation reduces the amount of energy households use. Assume that you can afford to include 240 households in the experiment. Describe how you would design and carry out such an experiment. Answer in a maximum of 4 pages and you may answer in point form. Make sure that your answers are related to the specific experiment mentioned.
+
+# References

@@ -3,31 +3,95 @@ title: "Assignment 2"
 author: "Benjamin Moran \n c3076448 (University of Newcastle)"
 date: 'Date Generated: `r Sys.Date()`'
 bibliography: References/Ass2.bib
+# csl: ../institute-of-mathematical-statistics.csl
 output:
   pdf_document: default
   html_document:
     df_print: tibble
     fig_caption: yes
 subtitle: STAT904 Statistical Consulting
+
 ---
 
 ```{r setup, include=FALSE}
 library(knitr)
 library(kableExtra)
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, fig.width= 6, fig.height= 3, fig.align = "center", warning = FALSE, message = FALSE)
 library(tidyverse)
 ```
 
 #### Plagiarism Statement 
 No part of this Assignment has been copied from anyone else, and I have not lent any part of it to anyone else.
 
-### Question 1. 
+## Question 1. 
 
 Identify two papers on statistical consulting written since 2008. Write a report summarising the two papers. Include an executive summary of the key points. The total report should be no more than 4 pages. You may not use papers that have been provided for this subject.
 
-#### Paper 1 _Statistical Disclosure Risk: Separating Potential and Harm_
+__Note: As should be obvious soon, I have not finished this part - I was a bit ambitious in my explanations I think. Regardless, I'm out of time to finish the rest of my report so I'm handing it in as is.__
 
-### Question 2.
+### Paper 1:
+_Statistical Disclosure Risk: Separating Potential and Harm_ by C. Skinner, C. M. O'Keefe, J. P. Reiter, L. Willenborg and C. Skinner. [@Skinner2012]
+
+
+#### Summary
+
+
+
+#### Decision Makers: Agency vs. Intruder 
+
+The authors present a hypothetical example: suppose some company, government department or other organisation (henceforth referred to as the _agency_) undertakes a survey or some other similar experiment to collect data from a sample of their clients or other members of the public (henceforth referred to as the _user_). The agency intends to produce statistical outputs from the data that they collect. Any user who misuses these outputs is know as an _intruder_ and the agency will need to develop _Statistical Disclosure Limitation (SDL)_ methods to limit the problems that intruders can cause. 
+
+#### Disclosure Risk: Potential & Harm
+
+In Section 2.2 - _The Loss to the Agency_ [-@Skinner2012 pp.353-5] the authors break down the overall concept of _Disclosure Risk (DR)_ into two constituent parts - _Disclosure Potential (DP)_ and _Disclosure Harm (DH)_ - the distinction between which is fundamental to the argument that they present. These two terms represent the first and second _loss criteria_ for the agency. Whilst the authors define DH in terms of the "possible undesireable consequences of public disclosure or ... of any actions by intruders designed to breach cofidentiality" [@Skinner2012 p. 354], they develop a more rigorous, mathematical definition of DP.
+
+The authors follow the _United States Code Title 13_ covering the US Census Bureau in defining an obligation to protect client confidentiality in terms of the "_ability_ of anyone with access to the [data - some variable (y) -] to use it to achieve disclosure or breach confidentiality" [-@Skinner2012 p. 353]. This _ability_ is defined in terms of "the potential to _infer_ the value of a target $y$" which itself is broken down into two constituent parts: _predictive disclosure_ - where $y$ is survey variable attributable to a know individual - and _indentity disclosure_ - where $y$ is a binary indicator variable specifying whether a particular output variable belongs to a particular identifiable individual. They define inference about $y$ as a _Predictive Probability Distribution (PPD)_ such that:
+
+\begin{equation}
+p(y \mid ~O, ~D_k, ~A_k), \quad k \in (1,2,3,\hdots, K)
+\end{equation}
+where $O$ is the _statistical output_ and $D$ is the auxiliary data available via a particular _attack method_ $A$ [-@Skinner2012 p. 353]. For each variable $y$ there are $k$ different attack methods, with auxiliary data corresponding to those attack methods. As such, the authors define the agency's _discolure potential_ as a function of these PPDs, integrated w.r.t. the variable $y$ to remove uncertainty relating to the range of possible targets:
+
+\begin{equation}
+H\left(O; D_k, A_k\right), \quad k \in (1,2,3,\hdots, K)
+\end{equation}
+
+The form that $H$ takes depends on how the agency in question judges its obligations. If - for instance - $H$ represents the worst breach/identification possibility, then it would be found by maximising the values of $Y_k$. However, if $H$ represents some frequency of breaches, then it could be found via the _Cumulative Distribution Function (CDF)_ of $Y_k$ for some threshold value (say $p > 0.5$). 
+
+Thus for any target variable $y$, the agency can use the PPD $p(y\mid \hdots)$ to assess 
+
+#### Measuring Potential Disclosure and Its Effects
+
+\newpage 
+
+### Paper 2: 
+_Inducing Greater Transparency: Towards the Establishment of Ethical Rules for Econometrics_ by D. M. Levy & S. J. Peart [@Levy2008]  
+
+#### Summary
+
+The main theme of this paper is the lack (at the time of publishing) of a code of ethics governing econometricians similar to those issued by the _International Statistical Institute_ [@ISI1985] and _American Statistical Association_ [@ASA2000]. The authors focus their discussion on the incentive for _transparency_ and what institutional arrangements - namely a code of ethics - may help to induce it. They reason that both the human element involved in statistical consulting (which they refer to as 'sympathy') and the large number of practitioners make it simple for a client to find an econometrician "who is sympathetic with the client's preferances over [estimates provided by their analysis]" and they may then choose to "selectively report" the analysis [-@Levy2008 pp. 33-4]. However, the authors maintain that this possiblity is not caused by any professional misconduct; rather they place an emphasis on the effect that a lack of a transparency-inducing regime will have - "Our point is that in the absence of ethical constraints or other transparency-inducing institutional arrangements, the client may be able to induce the sympathetic researcher to produce [a biased estimate]" [-@Levy2008 p. 34].
+
+The authors use the example of court-appointed expert witness testimony vs. experts hired by each of the antagonists to develop a rule based on minimising the _bootstrap variance_ of each model/estimate the (non-court appointed experts) submit. The authors propose that "the court-appointed expert takes each of the contending models and bootstrap them. The winning model has the smaller bootstrap variance" [-@Levy2008 p. 34]. The authors contend that this will incentivise transparency by penalising non-transparent models.
+
+#### The Transparency Incetive and the Effect of the Market
+
+Before outlining their solution the authors first consider the following questions:
+
+\begin{itemize}
+\item "Does competition result in an efficient outcome regardless of the motivation of the statistical researchers?" [-@Levy2008 p. 34]
+\item "Can competitions substitute for personal discipline, ethics, and induce transparency?" [-@Levy2008 p. 34] 
+\end{itemize}
+
+Their motivating example involves expert witnesses hired by both opposing parties to some matter before the American legal system. They assume that it is possible for each side to find an expert who is sympathetic to their views and that the client's desire is to report a statistically efficient estimate to the court. Crucially, in their view this does not require proscribing any perjorative motives to either party or their experts; the authors contend that they "do not need to assume that experts are persuaded ... to earn financial rewards, but only that [their] sympathy will induce them to [report favourable estimates]." [-@Levy2008 pp. 106-107].
+
+
+#### Making the Transparency Incentive Compatible.
+
+
+
+\newpage
+
+## Question 2.
 A client is describing a medical test (e.g. for pancreatic cancer), and talks about the sensitivity and specificity of the test. What do these terms mean? Give a numerical example to illustrate your answer.
 
 In layman's terms, a test's __Sensitivity__ refers to the probability that it returns a positive result given a patient who has the condition that the test is designed to detect. On the other hand, a test's __Specificity__ is the opposite - the probability that the test returns a negative result given a patient who doesn't have the condition.
@@ -38,27 +102,27 @@ When we are speaking about _sensitivity_ and _specificity_ it is often easier to
 Q2_cont <- matrix(c("(A) True Positive","(C) False Negative","(B) False Positive","(D) True Negative"), nrow = 2)
 colnames(Q2_cont) = c("Has cancer","Does not have cancer")
 rownames(Q2_cont) = c("Positive Test Result","Negative Test Result")
-kable(Q2_cont)
+kable(Q2_cont, caption = "Outcomes for a diagnostic test with binary results")
 ```
 
 
 Using the above table we can derive some clearer definitions of sensitivity and specificity.
 
-$$
+\begin{equation}
 \begin{aligned}
 Sensitivity~&= \frac{A}{A+C} = \frac{True~Positive}{True~Positive + False~Negative} \\
 Specificity~&= \frac{D}{D+B} = \frac{True~Negative}{True~Negative + False~Positive}
 \end{aligned}
-$$
+\end{equation}
 
 _(B) False Positive_ also represents a __Type I Error__: rejecting the null hypothesis (that the patient does not have the condition) when it is actually true. On the other hand, _(C) False Negative_ represents a __Type II Error__: failing to reject the null hypothesis when the alternative is true. The higher a test's _specificity_, the lower the chance of _Type I error_; the higher a test's _sensitivity_, the lower the chance of _Type II error_. Each term can be calculated using the other:
 
-$$
+\begin{equation}
 \begin{aligned}
 Error_{I}~&= 1 - Specifity ~= \frac{False~Positive}{True~Negative + False~Positive}\\
 Error_{II}~&= 1 - Sensitivity ~= \frac{False~Negative}{True~Positive + False~Negative}
 \end{aligned}
-$$
+\end{equation}
 
 Let's look at a toy example: imagine a perfect test for pancreatic cancer - i.e one that is perfectly _specific_ and perfectly _sensitive_. If we conduct $1000$ of these tests and expect a prevalence rate of $2\%$, this test would return the following results. 
 
@@ -66,17 +130,17 @@ Let's look at a toy example: imagine a perfect test for pancreatic cancer - i.e 
 Q2_cont <- matrix(c(20,0,0,980), nrow = 2)
 colnames(Q2_cont) = c("Has cancer","Does not have cancer")
 rownames(Q2_cont) = c("Positive Test Result","Negative Test Result")
-kable(Q2_cont)
+kable(Q2_cont, caption = "Test outcomes for a test with perfect specifity and sensitivity")
 ```
 
 We can the calcultate the following:
 
-$$
+\begin{equation}
 \begin{aligned}
 Sensitivity~&= \frac{20}{20+0} = 1  \implies Error_{II} = 1 - 1 = 0\\
 Specificity~&= \frac{980}{980+0} = 1 \implies Error_{I} = 1 - 1 = 0,
 \end{aligned}
-$$
+\end{equation}
 
 as expected. Unfortunately, things don't work like that. Instead, let's imagine a slightly more realistic test that has a specificity of $90\%$, a sensitivity of $75\%$, and a prevalence rate of $2\%$.
 
@@ -84,17 +148,17 @@ as expected. Unfortunately, things don't work like that. Instead, let's imagine 
 Q2_cont <- matrix(c(15,5,98,882), nrow = 2)
 colnames(Q2_cont) = c("Has cancer","Does not have cancer")
 rownames(Q2_cont) = c("Positive Test Result","Negative Test Result")
-kable(Q2_cont)
+kable(Q2_cont, caption = "Test outcomes for a test 90% specifity, 75% sensitivity and 2% prevalence")
 ```
 
 The same calculations yield:
 
-$$
+\begin{equation}
 \begin{aligned}
 Sensitivity~&= \frac{15}{15+5} = 0.75  \implies Error_{II} = 1 - 0.75 = 0.25\\
 Specificity~&= \frac{882}{882+98} = 0.9 \implies Error_{I} = 1 - 0.9 = 0.1,
 \end{aligned}
-$$
+\end{equation}
 
 as expected. From this we can see that we would expect to see $5$ out of every $1000$ tests return a false positive result given the prevalence, sensitivity and specificity stated above. Additionaly, $98$ out of every $1000$ tests would return a false positive result.
 
@@ -104,26 +168,27 @@ Lastly, in this example we will increase the prevalence rate to $20\%$.
 Q2_cont <- matrix(c(150,50,80,720), nrow = 2)
 colnames(Q2_cont) = c("Has cancer","Does not have cancer")
 rownames(Q2_cont) = c("Positive Test Result","Negative Test Result")
-kable(Q2_cont)
+kable(Q2_cont, caption = "Test outcomes for the same test with 20% prevalence")
 ```
 
 From this we can see that we would expect to see $50$ out of every $1000$ tests return a false positive result given the prevalence, sensitivity and specificity stated above. Additionaly, $80$ out of every $1000$ tests would return a false positive result. We can see that increased prevalence has reduced the false positive rate and increased the false negativity. Hence, _prevalence_ is an important thing to consider when assessing the specificity and sensitivity of a particular test; the interaction of all three must be considered alongside the context of any intervention/research proposal in order to adequately assess it.
 
 
-### Question 3. 
+## Question 3. 
 A client approaches you for advice about designing a national survey on the use of opioids in Australia. As part of the project you decide that it is worth obtaining some time series data on deaths due to opioids in Australia for a number of years. Write a short report for the client covering (a), (b), (c) and (d).
 
 
-#### (a) How the data were obtained.
+### (a) How the data were obtained.
 
-The data was obtained from the the _Non-medical use of pharmaceuticals: trends, harms and treatment, 2006-07 to 2015-16 (Australian Institue of Health and Welfare , 2017)_ report [@AIHW] and the supplementary material provided for the report [@AIHWsupp].
+The data was obtained from the the _Non-medical use of pharmaceuticals: trends, harms and treatment, 2006-07 to 2015-16 (Australian Institue of Health and Welfare , 2017)_ report [@AIHW2017a] and the supplementary material provided for the report [@AIHW2017aS]. See Table 5.
 
-#### (b) Plot and summarise the data and comment on it.
+### (b) Plot and summarise the data and comment on it.
 
 ```{r}
 library(xlsx)
 library(tidyr)
 files <- list.files("Data",
+                    # "Assignments/Ass-2/Data",
                     pattern = ".xlsx", 
                     full.names = TRUE)
 opioid.dat <- read.xlsx(files[[1]],
@@ -132,6 +197,7 @@ opioid.dat <- read.xlsx(files[[1]],
                         endRow = 10,
                         header = TRUE)[-2,]
 colnames(opioid.dat) <- str_replace_all(colnames(opioid.dat),"X","")
+
 kable(opioid.dat, 
       caption = "Table S16 - AIHW 2017 Supplementatry Report Data",
       format = "latex",
@@ -139,7 +205,7 @@ kable(opioid.dat,
   kable_styling(latex_options = c("striped", "scale_down"))
 ```
 
-```{r}
+```{r, fig.height=4}
 
 opioid.dat <- opioid.dat %>% 
   gather(Year, No.Deaths, -1) %>% 
@@ -147,30 +213,48 @@ opioid.dat <- opioid.dat %>%
 
 ggplot(data = opioid.dat, 
        aes(x = Year, y = No.Deaths, colour = Cause.of.death)) +
-  geom_line(size = 1) +
-  geom_point() +
+  geom_line(size = 0.5) +
+  geom_point(size = 0.25) +
   theme_minimal() +
-  labs(colour = "COD") +
+  labs(title = "Drug-induced Deaths, 1999-2016",
+       subtitle = "by Cause of Death Drug Type",
+       caption = "Source: Table S16 - AIHW 2017 (Supplementary Material)") +
   theme(legend.position = "bottom",
-        legend.text = element_text(size = 8))
+        legend.text = element_text(size = 8),
+        legend.title = element_blank())
 ```
 
 
+### (c) What is your prediction of the number of deaths for the next year - give both a point and an interval prediction.
 
+The estimates will be computed using the `Forecast` in `R` package by _R. J. Hyndman and Y. Khandakar_ [@Hyndman2008]. Firstly, we'll use `auto.arima()` to fit an _Autoregressive Integrated Moving Average (ARIMA)_ model to the __All opiods__ time series.
 
-#### (c) What is your prediction of the number of deaths for the next year - give both a point and an interval prediction.
-
-```{r}
+```{r, echo = -1}
 library(forecast)
-opioid.ts = ts(subset(opioid.dat, Cause.of.death == "All opioids")[[3]], start = 1999, end = 2016)
-
+opioid.ts = ts(subset(opioid.dat,
+                      Cause.of.death == "All opioids")[[3]],
+               start = 1999,
+               end = 2016)
 fit <- auto.arima(opioid.ts)
-fit.forecast = forecast(fit,h=2)
+```
+
+The suggested model is an _ARIMA(1,2,0)_: i.e. a model with an _AR_ order of $1$, $2$ degress of differencing and $0$ moving average terms. The coefficient of the _AR_ term $ar_1 =$ `r fit$coef`. The model information is stored in the variable `fit`. Next, we will use the `forecast::forecast()` function on our model to produce a point estimate for $2017$ as well as $80\%$ and $95\%$ confidence intervals for that point estimate.
+
+```{r, echo = 1}
+fit.forecast = forecast(fit,h=1) # h=1 -> a single point estimate.
 plot(fit.forecast)
+df <- as.data.frame(t(unlist(c(broom::tidy(fit.forecast)))))
+rownames(df) = 2017
+kable(df, 
+      format = "latex",
+      col.names = c("Point Est.", "Lower CI (80%)", "Upper CI (80%)","Lower CI (95%)","Upper CI (95%)"),
+      align = "r",
+      booktabs = T) %>%
+  kable_styling(latex_options = c("striped"))
 ```
 
 
-#### (d) What size sample of people would be needed to estimate the proportion of people using opioids in the last 12 months with a margin of error of 1 percentage points? The margin of error is approximately 2 times the standard error of an estimate.
+### (d) What size sample of people would be needed to estimate the proportion of people using opioids in the last 12 months with a margin of error of 1 percentage points? The margin of error is approximately 2 times the standard error of an estimate.
 
 The calculation is fairly straight forward. The sample margin of error (MOE) is defined as:
 
@@ -186,25 +270,33 @@ pop.dat = seq(from=0, to = 1, by = 0.001)
 
 sampsize = function(p, moe= 0.01){
   ((p*(1-p)/(moe/2)^2))
-  # ninv = ((moe/2)^2)/(p*(1-p))
-  # ninv^(-1)
 }
 
 nvals = round(map_dbl(pop.dat, sampsize, moe = 0.01))
 
 plot.df <- data.frame(prop = pop.dat*100, n =  nvals)
 
+a <- vector(mode = "character", length = 5L)
+a <- ifelse(c(0,25,50,75,100) == 50.0, "red","black")
+
+b <- vector(mode = "character", length = 5L)
+b <- ifelse(c(0,2500,5000,7500,10000) == 10000, "red","black")
+
 ggplot2::ggplot(data = plot.df, aes(x = prop, y = n)) + 
   geom_line() + 
   theme_minimal() + 
   geom_point(aes(x = 50, y = max(n)), colour = "red") +
-  geom_vline(xintercept = 50, lty = 2, colour = "grey") +
+  geom_vline(xintercept = 50, lty = 2, colour = "red", alpha = 0.5) +
+  geom_hline(yintercept = 10000, lty = 2, colour = "red", alpha = 0.5) + 
   labs(x = "Proportion (%)",
        y = "Req. Sample Size",
-       main = "Sample Size for MOE of 1% by Usage Proportion")
+       title = "Sample Size for MOE of 1%",
+       subtitle = "by Population Proportion (Max. in red)") +
+  theme(axis.text.x = element_text(colour = a),
+        axis.text.y = element_text(colour = b))
 
 ```
 
-The ... estimates that $3.6\%$ of survey participants reported _"misuse of pain-killers/opioids"_ [@AIHW2017b]. Whilst not perfect, we can use this as an rough estimate of our $p$. Plugging this in we find that the sample will need to be at least `r round(sampsize(0.036))` to obtain the required MOE.
+The _AIHW National Drug Strategy Household Survey 2016: detailed findings_  report states that $3.6\%$ of survey participants reported _"misuse of pain-killers/opioids"_ in 2016 [@AIHW2017b pp. 51]. Whilst not perfect, we can use this as an rough estimate of our $p$. Plugging this in we find that the sample will need to be at least `r round(sampsize(0.036))` to obtain the required MOE.
 
 # References

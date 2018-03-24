@@ -1,0 +1,26 @@
+---
+title: "Assignment 10"
+author: "Benjamin Moran \n c3076448 (University of Newcastle)"
+date: 'Date Generated: `r Sys.Date()`'
+# bibliography: AssX.bib
+output:
+  pdf_document: default
+  html_document:
+    df_print: tibble
+    fig_caption: yes
+subtitle: STAT904 Statistical Consulting
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+#### Plagiarism Statement 
+No part of this Assignment has been copied from anyone else, and I have not lent any part of it to anyone else.
+
+# Question 1
+(From Exercise 10.4.3 of Biostatistics: A Foundation for Analysis in the Health Sciences, 5th edition, by Wayne W. Daniel). Five hundred elementary school children were cross-classified by socio-economic group and the presence or absence of a certain speech defect. The results were as follows:
+
+# References
