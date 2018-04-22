@@ -1,0 +1,49 @@
+---
+title: "Untitled"
+author: "B. Moran"
+date: "19 April 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Q1e 
+
+Mann Whitney U Test (Wilcoxon Rank Sum Test)
+
+http://sphweb.bumc.bu.edu/otlt/MPH-Modules/BS/BS704_Nonparametric/BS704_Nonparametric_print.html
+http://sphweb.bumc.bu.edu/otlt/MPH-Modules/BS/BS704_Nonparametric/BS704_Nonparametric2.html
+
+## Q2
+
+### a
+
+What is the data and how have you measured/recorded it?
+
+
+### b
+
+Assumptions:
+
+* Independence of observations – this is an assumption of the model that simplifies the statistical analysis.
+* Normality – the distributions of the residuals are normal.
+* Equality (or "homogeneity") of variances, called homoscedasticity — the variance of data in groups should be the same.
+
+The separate assumptions of the textbook model imply that the errors are independently, identically, and normally distributed for fixed effects models, that is, that the errors $(\varepsilon)$ are independent and
+
+
+### c (from Wikipedia)
+Tests of Normality (Supplemental)
+For an ANOVA, we assume the errors are normally distributed with mean 0 and constant variance.
+The Kolmogorov-Smirnov Goodness-of-Fit Test,  the Cramer-Von Mises Goodness-of-Fit Test,  and
+the Anderson-Darling Goodness-of-Fit Test can be applied to any normal distribution with mean 0 and constant variance.
+We are also assuming that the random sample referred to in each test is the set of residuals from the
+ANOVA. Thus, in each each test we are checking the normality assumption in the ANOVA. In this case, we
+want to see a large p-value because we do not want to reject the null hypothesis that the errors are
+normally distributed.
+
+Brown-Forsythe: In statistics, when a usual one-way ANOVA is performed, it is assumed that the group variances are statistically equal. If this assumption is not valid, then the resulting F-test is invalid. The Brown–Forsythe test is a statistical test for the equality of group variances based on performing an ANOVA on a transformation of the response variable. The Brown–Forsythe test statistic is the F statistic resulting from an ordinary one-way analysis of variance on the absolute deviations from the median.
+
+Bartlett's: is highly sensitive to non-normality. Is a test for homogeneity of variances if normal- otherwise, checks for normality.

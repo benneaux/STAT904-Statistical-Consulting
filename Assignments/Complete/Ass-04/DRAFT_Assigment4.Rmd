@@ -1,0 +1,218 @@
+---
+title: "Assignment 4"
+author: "Benjamin Moran \n c3076448 (University of Newcastle)"
+date: 'Date Generated: `r Sys.Date()`'
+# bibliography: AssX.bib
+output:
+  pdf_document: default
+  html_document:
+    df_print: tibble
+    fig_caption: yes
+subtitle: STAT904 Statistical Consulting
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE)
+library(purrr)
+library(tidyverse)
+library(broom)
+library(car) 
+library(lmtest) 
+library(multiwayvcov) 
+```
+
+#### Plagiarism Statement 
+No part of this Assignment has been copied from anyone else, and I have not lent any part of it to anyone else.
+
+# Question 1
+
+Provide a list of 4 books on statistical consulting and details on how to obtain them.
+
+I found a very handy list in an article in the Stattr@k blog on the website of the _American Statistical Association_: http://stattrak.amstat.org/2012/06/01/successfulstatistician/
+
+Some of their recommendations that I have also seen in other lists:
+
+## "Statistical Consulting" by Javier Cabrera and Andrew McDougall
+
+Published by Springer. According to the publisher:
+
+>The motivation for this book arose from the statistical consulting course that we have taught regularly for several years. In that course, we focus on the themes: • Understanding the statistical consulting "process" • Developing effective communication skills • Obtaining experience through case studies. In reality, there is no substitute for consulting directly with a client and for this interaction to be effective, good communication skills are essential. Unfortunately, this aspect of a statistician's training is often neglected and statistics graduates have little choice but to learn these skills on the job. One of the purposes of this book is to address this need. Statistical consulting occurs in a diverse range of environments and for tackling real-life statistical problems, the statistician needs to have a strong interest in the scientific method. 
+
+It is available from the publisher's website in either physical or ebook form; you can also purchase a physical copy from a number of booksellers online.
+
+Lastly, you can either rent or purchase the ebook through Google Play.
+
+### Publisher's website
+http://www.springer.com/gp/book/9780387988634
+
+
+## "Statistical Consulting: A Guide to Effective Communication by Janice Derr"
+
+Originally published by Duxbury Thomas Learning this book seems to be out of print. However, physical copies can be easily found online but ebooks seem to be rarer.
+
+>Dr. Janice Derr covers all aspects of statistical consulting. Using text and video, she integrates three themes that form the perspective of the book. First, a statistician should treat each client as a potential collaborator. Second, diversity must be appreciated. Students will see a variety of cultures, styles of communication and negotiation, and learning preferences in the book. Third, experienced statisticians and clients must work together in the process of training statistical consultants. On the CD-ROM, video segments bring the material to life and cover each aspect of statistical consulting by demonstrating good and bad techniques.
+
+Second-hand versions can be also be found.
+
+## A Career in Statistics: Beyond the Numbers by Gerald J. Hahn and Necip Doganaksoy.
+
+Published by Wiley, this book is available from the publisher's website and numerous other marketplaces online. It is also available as an ebook from Google and Amazon.
+
+From the publisher's website:
+
+>A Career in Statistics: Beyond the Numbers prepares readers for careers in statistics by emphasizing essential concepts and practices beyond the technical tools provided in standard courses and texts. This insider's guide from internationally recognized applied statisticians helps readers decide whether a career in statistics is right for them, provides hands-on guidance on how to prepare for such a career, and shows how to succeed on the job.
+
+### Publisher's website
+https://www.wiley.com/en-us/A+Career+in+Statistics%3A+Beyond+the+Numbers-p-9780470404416
+
+## "Statistics Done Wrong: The Woefully Complete Guide" by Alex Reinhart 
+
+This book is actually available for free on the author's website: https://www.statisticsdonewrong.com/. Physical copies can be purchase from a number of online outlets if you wish to support the author.
+
+>Statistics Done Wrong is a guide to the most popular statistical errors and slip-ups committed by scientists every day, in the lab and in peer-reviewed journals. Many of the errors are prevalent in vast swaths of the published literature, casting doubt on the findings of thousands of papers. Statistics Done Wrong assumes no prior knowledge of statistics, so you can read it before your first statistics course or after thirty years of scientific practice.
+
+# Question 2
+
+The following data give the readings of the variables High Density Lipoprotein (HDL) total Cholesterol (CHOL) and total Triglyceride (TRI) concentration and the presence or absence of Sinking Pre-Beta taken from 42 subjects.
+
+```{r}
+if("Data" %in% list.files()){
+chol.dat <- read.delim("Data/cholesterol.txt", header = TRUE, sep = ",")
+} else {
+chol.dat <- read.delim("Assignments/Ass-4/Data/cholesterol.txt", header = TRUE, sep = ",") 
+}
+chol.dat$SPB <- factor(chol.dat$SPB, levels = c(0,1), labels = c("Absent", "Present"))
+```
+
+The client wishes to investigate the possible relationship between HDL and the three variables CHOL, TRI and SPB.
+
+## (a) List 6 questions that you would ask the client at the first meeting.
+
+* What is the purpose of the study and what is your hypothesis concering HDL and its relation to the other variables.
+* How was the data collected or - if the data hasn't yet been collected - how do you mean to collect the data?
+* What are the characteristics of the sample?
+* Do you have ethics approval?
+* What type of analysis do you require? Do we need to assist in the experimental design process or merely analyse the results?
+* What is the timeframe that has been allocated for the analysis?
+
+## (b) Analyse the data and write a report for the client.
+
+
+The data you have provided me contains data for 42 individual patients and consists of:
+
+* Three continuous variables detailing measurements of the concentration of High Density Lipoprotein (HDL), Total Cholesterol (CHOL) and Total Triglyceride (TRI) in each patient's blood.
+* A categorical variable encoding the presence or absence of Sinking Pre-Beta (SPB) in 
+each patient's blood.
+
+## Visualising the data
+
+First, let's visualise the distribution of the values for each of the continuous variables.
+
+
+```{r}
+cholplot.dat <- chol.dat %>%
+  select(-SPB) %>% 
+  gather(measure, n, HDL:TRI) %>% 
+  mutate(plot = as.factor(1))
+
+cholplot2.dat <- chol.dat %>%
+  gather(measure, n, HDL:TRI)
+```
+
+```{r}
+ggplot(cholplot.dat,aes(x = plot, y = n)) +
+  geom_violin(aes(fill = measure), draw_quantiles = TRUE,adjust = .75,
+              trim = FALSE, scale = "count") +
+  facet_grid(measure~., scales = "free") +
+  theme_light() +
+  theme(legend.position = "none") +
+  labs(title = "Distribution of reported values of HDL, CHOL and TRI",
+       # subtitle = "by SPB status",
+       y = "Concentration") + 
+  theme(axis.text.x = element_blank(),
+        axis.title.x = element_blank())
+```
+
+From the first plot we can see a number of different things:
+
+* The reported HDL values come from a much narrower range that either CHOL or TRI.
+* There is a small suggestion that the distribution of HDL values may be _bi-modal_.
+
+The _Sinking Pre-Beta_ (SPB) variable is a categorical one, indicating either __presence__ or __absence__. As such, it is sensible to see if the distribution of concentration values is affected by this variable. 
+
+
+```{r}
+ggplot(cholplot2.dat,aes(x = SPB, y = n)) +
+  geom_violin(aes(fill = measure), draw_quantiles = TRUE,adjust = .75,
+              trim = FALSE, scale = "count") +
+  facet_grid(measure~., scales = "free") +
+  theme_light() +
+  theme(legend.position = "none") +
+  labs(title = "Distribution of reported values of HDL, CHOL and TRI",
+       subtitle = "by SPB status",
+       y = "Concentration")
+```
+
+From the second plot we can see that the absence of SPB seems to:
+
+* eliminate the bi-modal characteristic of the distribution of HDL concentration values.
+* coincide with a much narrower range of reported TRI concentration.
+* coincide with a greater number of CHOL readings clustering around the mean.
+
+This visual inspection suggests to me that a simple additive or multiplicative linear model of HDL concentration will not produce acceptable results because of the effect that is observed with the presence/absence of SPB. We can confirm this by creating some basic linear models for the data.
+
+### Additive Model: Simple
+
+```{r, echo = TRUE}
+mod1 <- lm(HDL~CHOL + TRI + SPB, data = chol.dat)
+knitr::kable(tidy(mod1))
+```
+
+Only the coefficients for the __Intercept__ and the _presence_ of __SPB__ are deemed significant at $\alpha = 0.05$. Next we try the multiplicative model.
+
+### Multiplicative Model: Simple
+
+```{r, echo = TRUE}
+mod2 <- lm(HDL~CHOL * TRI * SPB, data = chol.dat)
+knitr:::kable(tidy(mod2))
+```
+
+Nothing here is considered significant. Now, if we consider the SPB variable to define _clusters_ within the sample, then we can refer to the theory of _Clustered Standard Errors_ (CSEs). With CSEs, we assume that the model errors are independent between the clusters but are _correlated_ within clusters.
+
+We now rerun our models, this time specifying _SBP_ as a cluster indicator and computing a variance-covariance matrix on the new model, before computing p-values for the model coefficients using the `lmtest::coeftest()` function in `R`.
+
+### Additive Model: Clustered
+
+```{r, echo = TRUE}
+reg1 = lm(HDL ~ CHOL + TRI, data = chol.dat) 
+# Cluster standard errors by ‘type’
+reg1$clse <-cluster.vcov(reg1, chol.dat$SPB) 
+knitr:::kable(tidy(coeftest(reg1, reg1$clse)))
+```
+
+Still, only the intercept is significant at $\alpha = 0.05$. Let's try the multiplicative model
+
+### Multiplicative Model: Clustered
+
+```{r, echo = TRUE}
+reg2 = lm(HDL ~ CHOL * TRI, data = chol.dat) 
+# Cluster standard errors by ‘type’
+reg2$clse <-cluster.vcov(reg2, chol.dat$SPB) 
+knitr:::kable(tidy(coeftest(reg2, reg2$clse)))
+```
+
+Much better. This model returns coefficients that are considered significant at $\alpha = 0.05$ for all of the model inputs. Let's plot some model diagnostics.
+
+### Regression Diagnostics
+
+```{r}
+par(mfrow=c(2,2))
+plot(reg2)
+```
+
+The model diagnostics look alright: the __Residuals vs. Fitted__ plot doesn't seem to indicate any non-linear effects missed by the model; the __Normal Q-Q__ plot looks fine with only a few noted outliers; the __Scale Location__ plot indicates that those outliers aren't significant; the __Residuals vs. Leverage__ plot shows that no data points exert undue influence on the regression line fitted to the data (i.e. no points have a _Cook's distance_ greater than the specified values).
+
+## Recommendation
+
+This data suggests that there is somehting more complex affecting HDL concentration than con be explained by a simple linear model. Clustering by the presence of SPB led to a much better model composed of the data elements available, but given the effect that SPB has on the outcome I recommend that the experimental design is revistied; other factors that are related to SPB may need to be considered. If no additional factors can be identified then a new experimental design should be developed that is built around the observed SPB clustering.

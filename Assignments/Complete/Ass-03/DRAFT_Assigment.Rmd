@@ -1,0 +1,372 @@
+---
+title: "Assignment 3"
+author: "Benjamin Moran \n c3076448 (University of Newcastle)"
+date: 'Date Generated: `r Sys.Date()`'
+bibliography: ass3.bib
+output:
+  pdf_document: default
+  html_document:
+    df_print: tibble
+    fig_caption: yes
+subtitle: STAT904 Statistical Consulting
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, fig.height = 3, fig.width = 6)
+library(tidyverse)
+```
+
+#### Plagiarism Statement 
+No part of this Assignment has been copied from anyone else, and I have not lent any part of it to anyone else.
+
+# Question 1. 
+
+__NOTE: Mostly Not Attempted__.
+
+There are several professional societies that a statistician can belong to and which provide useful information. Check the web sites of the Statistical Society of Australia, the Royal Statistical Society and the American Statistical Association.
+
+## (a) For each of these web sites write a one-page summary of what potentially valuable information or resources are available.
+
+### The Statistical Society of Australia - http://www.statsoc.org.au/
+
+#### Membership
+
+The Membership page ([][http://www.statsoc.org.au/membership/]) lists all of the available benefits of becoming a member of the SSA. Aside from a few economic benefits (favourable rates for professional indemnity insurance and electrical utility charges) the benefits mainly come in the form of access to/reduced costs for networking and educational events sponsored or run by the SSA. Members are also given access to any SSA publications. 
+
+There are a number of different tiers for membership apart from the standard membership for working professionals, inluding student, transitional and retired tiers; each has a reduced annual fee.
+
+
+
+#### Accreditation 
+
+The SSA has two tiers of professional accreditation
+
+A detailed description of the evaluation criteria and process can be found on the SSA site, along with related resources (e.g. application forms etc.).
+
+#### Advice
+
+#### Career Development
+
+#### Publications
+
+The SSA publishes the __Australian & New Zealand Journal of Statistics__ in conjunction with the _New Zealand Statistical Association (NZSA)_. It is a quarterly journal that is only available to members of either body. 
+
+The SSA also produces a monthly (since July 2017) newsletter that includes information about recent meetings and workshops, news about recent articles submitted by members, awards and lectures given by state branches, and notifications about upcoming events.
+
+
+### The Royal Statistical Society - https://www.rss.org.uk/
+
+NA
+
+#### Membership
+
+#### Accreditation 
+
+#### Advice
+
+#### Advocacy
+
+The website has an entire section dedicated to advocacy in various fields called _Influencing Change_. 
+
+#### Career Development
+
+#### Publications
+
+ * Significance:
+ 
+ * Journal Series A, B & C
+ 
+ * StatsLife
+ 
+ * Reports
+
+### The Royal Statistical Society - http://www.amstat.org/
+
+NA
+
+#### Membership
+
+#### Accreditation 
+
+#### Advice
+
+#### Advocacy
+
+#### Career Development
+
+#### Publications
+
+## (b) What are the requirements for you to become accredited as a Graduate Statistician (G. Stat.) by the Statistical Society of Australia? What additional requirements are there to become and Accredited Statistician?
+
+The requirements for accreditation as a Graduate Statisitician are strictly educational.
+
+> __5.3.1 Education requirement__
+Holders of the qualification of Graduate Statistician shall meet at least the following educational requirements, provided no more than eight years has elapsed since the award of the degree or equivalent on which the application is based: 
+>
+1.  A pass degree from an Australian university, or equivalent qualification.
+2.  A minimum of 25% of a year's study in Statistics in total at second year level, and a minimum of 50% of a year's study in Statistics at third year level. 
+3.  A four year Honours degree in Statistics, or the applicant has achieved a minimum average grade of 65% (that is, a credit average or equivalent) in their Statistical major at third year level or in the Statistics postgraduate coursework in the degree that forms the basis of their application.
+4.  Units involving statistical inference, data analysis, statistical communication skills and the use of a statistical package. 
+5.  Several units covering material from the following list: probability and distribution theory, linear models, design of experiments, sampling methods, multivariate analysis, analysis of categorical data, time series, survival analysis, statistical consulting, statistical graphics, databases. 
+
+### Accredited Statistician
+
+In addition to the educational requirements for becoming a _G. Stat_, becoming an _Accredited Statistician_ requires experience. [^#]
+
+> __5.4.2 Experience__ The applicant needs to demonstrate an appropriate level of competence in the  application of statistical methods. Here, application refers to the use of  statistical methods in connection with analysis and/or modelling and /or  reporting of work in which the handling of real -world  data is an important part.  Theoretical work is not sufficient of itself ; the emphasis is on application to  data, not on research into the theory of statistics . This should not be taken to  exclude  work in which the primary focus is theoretical, as long as there is a  part that can be regarded as application. 
+>
+a. Where the educational requirement is met through 1 of  5.4.1,  a further  six (6) years of practical experience is required. 
+b. Where the educational requirement is met through 1  of 5.4.1  and the  applicant has a  first or second class Honours degree including an  honours year with at least 50% statistical content , a further four (4)  years  only  of practical experience is required. 
+c. Where the educational requirement is met  through  2 of 5.4.1,  at least  ten (10) years of practical experience is required. 
+d. For at least three (3)  years of the qualification period, applicants must  have taken  responsibility for the statistical content of their work. 
+e. Practical experience is not limited to paid employment; it may occur in  a range of forms of practical activity. The Accreditation Committee will  consider any practical experience which the applicant believes to be  relevant. 
+f. In considering the evidence for experience, the Accreditation  Committee will take into account the length of experience and the level  of expertise involved, and may exercise discretion in considering what  constitutes  evidence of experience and expertise. 
+g. Applicants who h ave undertaken study for higher or other  postgraduate degrees in Statistics may count some of their years of  study for these degrees, up to a maximum of two- thirds of the study,  towards the experience qualification, provided it fits within the practical   
+
+
+## (c) Briefly summarise any information that the web sites contain about ethics and standards for statisticians including protecting individuals’ confidentiality.
+
+NA
+
+\newpage 
+
+# Question 2. 
+
+Time series data are common in many situations.
+
+## (a) What does it mean if a time series is described as stationary?
+
+There are two types of stationary: _strictly stationary_ and _weakly stationary_. For definitions, we'll be relying on _Time Series Analysis and Its Applications With R Examples_ by _R. Shumway_ and _D. Stoffer_ [@Shumway2011 pp. 22-3].
+
+### Strictly Stationary
+
+_Shumway_ and _Stoffer_ define __strictly stationary__ as follows [-@Shumway2011 p. 22]: 
+
+> __Definition 1.6__: A strictly stationary time series is one for which the probabilistic behavior of every collection of values
+$$
+\{x_{t_1}, x_{t_2}, \hdots, x_{t_k}\}
+$$
+is identical to that of the time shifted set
+$$
+\{ x_{t_{1+h}}, x_{t_{2+h}}, \hdots, x_{t_{k+h}} \}
+$$
+That is,
+$$
+P\{ x_{t_1} \leq c_1, \hdots, x_{t_k} \leq c_k \} = P\{x_{t_{1+h}} \leq c_1, \hdots, x_{t_{k+h}} \leq c_k \}
+$$
+for all $k = 1, 2, \hdots,$ all time points $t_1, t_2, \hdots, t_k,$ all numbers $c_1, c2,\hdots, c_k,$ and all time shifts $h = 0,\pm 1, \pm 2, \hdots.$
+
+In other words, a strictly stationary time series is one whose cumulative distribution function _does not depend on time_ but only depends on the _difference_ between two time points. This is a very restrictive criteria, which very few series meet. The most recognisable example of a strictly stationary time series is a _Gaussian White Noise Process_.
+
+### Weakly Stationary
+ 
+_Shumway_ and _Stoffer_ define __weakly stationary__ as follows [-@Shumway2011 p. 23]: 
+ 
+> __Definition 1.7__:  A weakly stationary time series, $x_t$, is a finite variance process such that:
+
+> \quad (i) the mean value function, $\mu_t$ is constant and does not depend on time $t$, and 
+
+> \quad (ii) the autocovariance function, $\gamma(s, t)$ depends on $s$ and $t$ only through their difference $\mid s - t \mid$.
+
+Fo a time series to be considered _weakly stationary_ the only things that need to depend on time are its _mean-value_ function - $E_X[t] = \mu(t) = \mu(t + \tau) = E_X[t + \tau], ~~ \forall \tau \in \mathbb{R}$ - and it's _autocovariance_ function - $\gamma(s, t) = E_X[(s - \mu(s))(t - \mu(t))] = E_X[s,t]-\mu(s)\mu(t), ~~  \forall t>s \in \mathbb{R}$.
+
+Ultimately, the conditions for _strict_ stationarity are often too stringent for use with realistic data sets so we often refer to _weak_ stationarity as - simply - stationarity. It is this sense of _stationarity_ that we will use. 
+
+## (b) A client approaches you to advise on an analysis of their monthly sales data. They run a national chain of plant nursery shops.
+
+### 1) Write a short note explaining what seasonality and seasonal adjustment are and why they might be important for the client.
+
+When discussing time series, _seasonality_ refers to variations in the data that repeat at regular intervals, generally for periods less than a year. A good example of this kind of variation would be the mean temperature of a particular town: the temperature would peak sometime around summer and trough some time in winter before the cycle begins again. 
+
+_Seasonal Adjustment_ refers to a process that removes the effect of _seasonality_ from a time series data set. For an example, imagine that there is a temperature sensor on the top of an office building and you want to analyse the effect that the building being occupied during business hours has on the temperature that is reported. The sensor reports one temperature reading a day, taken at 1300hrs. If you plot this data, the most obvious thing about it would be that the the level cycles between summer and winter. But the difference is so large that any effect of business hours is virtually undetectable. By seasonally adjusting this data set we remove the seasonal cycle; what we are left with is a time series data set that shows readings that are higher during the week and lower on weekends and public holidays due to the lack of building plant systems and reduced occupancy lowering the radiant temperature of the builiding and reducing the readings.
+
+In your business, seasonal components may represent the growing cycles for native plants - they are usually dormant for parts of the year - or the effects that warm temperatures and increased daylight hours have on your customers desire to be outside in the garden. Each of these cycles are regular, repeating annualy and measured at either monthly, quarterly or half-yearly intervals. By removing the effect of these cycles (which are outside of your control), seasonal adjustment allows us to see the effects of factors that you _can_ control, such as the timing of sales and promotions or their effects compared to similar periods from other years. 
+
+
+### 2) Construct some simple hypothetical data about sales of plant nursery shops that illustrates the idea of seasonality.
+
+In Figure 1 you can see some time series data that I've created to simulate total monthly unit sales for a random plant nursery. For this task, I have assumed that the peak month for sales February each year (corresponding to spending around Valentine's Day); I have also assumed that the low month is June.
+
+```{r fig1, fig.cap = "Monthly Nursery Sales (Units) \n from Jul-Sep 2000 to Apr-Jun 2015"}
+# to replicate sales data I've used the woolyrnq data set from the forecast package.
+ts = c(AirPassengers/forecast::ma(AirPassengers, order = 12))[72:137]*6000
+ts[33] = ts[33] - 200
+ts[45] = ts[45]-500
+ts[57] = ts[57]-400
+florist.dat <- ts(ts, 
+                  frequency = 12, 
+                  start = c(2011, 7), 
+                  end = c(2016, 12))
+florist.gg <- fortify(florist.dat)
+february = data.frame(y = c(rep(NA,7),1, rep(NA,4))*florist.gg$y, x = florist.gg$x )
+june = data.frame(y = c(rep(NA,11),1)*florist.gg$y, x = florist.gg$x )
+ggplot(data = florist.dat, aes(x , y)) +
+  geom_line() +
+  geom_point(size = 0.75) +
+  theme_light() +
+  labs(title = "Monthly Nursery Sales (Units)",
+       subtitle = "July 2011 to Dec 2017",
+       y = "Sales (Units)",
+       colour = "Month") +
+  geom_point(data = february, aes(colour = "February"), size = 2) +
+  geom_point(data = june, aes(colour = "June"), size = 2) +
+  theme(axis.title.x = element_blank(),
+        legend.position = "bottom")
+```
+
+
+It is often useful to think of every time series as being made up of three components: a _seasonal_ component, a _trend_ component and a _residual_ component. The _seasonal_ part represents any cycle in the data and can be measured monthly, quarterly or any other period up to (and including) yearly - e.g. in this data we would expect to see a regular pattern that follows the change in seasons from winter (where natives are traditionally outside of their growing phase) through to summer (where they are not) culminating with a high point in February (representing gifts tied to Valentine's day). The _trend_ part represents and change in the overall level - e.g. do your sales go up on average over time? Lastly, the _residuals_ part represesnts any shifts that can't be explained by the previous two components - e.g. you might have a month of reduced sales due to some supplier problems that restrict your normal sales capacity.
+
+Below I've decomposed the time series into these component parts.
+
+
+```{r}
+autoplot(decompose(florist.dat), range.bars = FALSE)
+```
+
+By then removing the seasonal component, we can observe changes that are unconnected to its influence; these are the factors that can be harder to observe even with the most complete knowledge or your business and identifying them can begin the process of improving your returns. The following chart combines both the trend and the residuals to give us a _seasonally adjusted_ view of the data.
+
+```{r}
+sadjplot = fortify(forecast::seasadj(decompose(florist.dat)))
+february = data.frame(y = c(rep(NA,7),1, rep(NA,4))*sadjplot$y, x = sadjplot$x )
+june = data.frame(y = c(rep(NA,11),1)*sadjplot$y, x = sadjplot$x )
+ggplot(data = sadjplot, aes(x, y)) +
+  geom_line(colour = "grey") +
+  geom_point(size = 0.75) +
+  theme_light() +
+  labs(title = "Quarterly Nursery Sales (Units)",
+       subtitle = "July 2011 to Dec 2017",
+       y = "Sales (Units)",
+       colour = "Month") +
+  geom_point(data = february, aes(colour = "February"), stroke = TRUE, size = 4) +
+  geom_point(data = june, aes(colour = "June"),  stroke = TRUE, size = 4) +
+  theme(axis.title.x = element_blank(),
+        legend.position = "bottom")
+
+```
+
+Because we have removed the seasonal component from this data we can see the effects of other processes that may be more amenable to our influence. In cases like this the seasonal component can so outweight the effects of the others that it makes it impossible to discern anything of interest. Ultimately, you and everybody else in your industry is aware of the _seasonality_ of your sales; thus any analysis that focuses on it will not be particularly useful to you. If is the other changes - in trend over time and more granular changes - that are key to understanding how to improve your business once it is established.
+
+In the above graph we can observe an obvious outlier in __October 2016__: it would be worthwhile checking your records in an instance such as this to find out why it deviated so sharply from what we may have expected. In addition we can see that the trend is mostly stable given that the data seems centred around $\approx 6000$ units - from this we can conclude that the volume of sales has remained steady over the last few years. By looking at each of the February and June results in this context we can see that some years are better than others: 2012 and 2015 were better that average for February results whilst 2013 and 2014 were poorer; similarly, 2014 and 2016 were better years for June sales whils 2012 and 2015 were poor. With this knowledge we can go back and see what your business did differently in those months and decide on whether we can replicate those conditions.
+
+
+### 3) Suggest two initial steps that the client could do after the first consultation with you.
+
+
+Firstly, I would advise you to break down your sales data into categories based on when they are in season and what type they are (flowering, ornamental, edging/borders, established etc.). The popularity of different plant-stock may or may not change over the year but their availability certainly will, which means that any time series representing overall sales is most likely obfuscating a key dynamic in your industry. By breaking down the sales into these categories you would be able to link changes in the corresponding data to more precise factors: for instance, some plant types may be more adversely affected by climactic conditions or natural disasters in particular regions than others; knowing this allows you to plan redundancies in your supply chain or determine whether or not the quality of stock that you purchase will be of a standard to sell at the rate you predict.
+
+Secondly, I would advise you to produce an overview of your products in the form of a 12 month calendar. On this calendar you should include the following pieces of information:
+
+* When your products come into season.
+* Your local knowledge about factors that effect the general quality of each product.
+* Your local knowledge about issues that effect your suppliers.
+* Any specific knowledge you have about issues that effected either a particular product or supplier for each of the last five years (i.e. the range of sales data that you have supplied to me).
+* Any specific issues that have effected your business during the same period (e.g. extensive roadworks affecting access or a refit or your storefront/nursery).
+* Any high-volume sales periods.
+* Any low-volume sales periods.
+
+The purpose of this document is to enrich the analysis I will produce with your knowledge about your business. For example, I may discover that there is a spike in sales of border/hedge style plants right at the beginning of the season for your most popular stock in this category. However, you may know that the supply/quality of that stock can be variable in the early weeks of its season. Knowing both these things can lead us towards possible improvements: if you have control over the supply of this product, you may choose to invest in methods to improve the quality of early season stock; if you don't control the supply you may choose to work with your suppliers to achieve improvements or look for others; if neither of these work you may instead identify an alternative product that does not have the same issues during this period and market it as a replacement to change customer behaviours. Any of these would result in higher quality products going to customers at the time they want, which would hopefully lead to increased sales or improved customer satisfaction.
+
+# Question 3.
+
+A political lobby group approaches you and wishes to make the case that the price of health and education are increasing faster than other items. Write a short report on how the consumer price index (CPI) is compiled by the Australian Bureau of Statistics (ABS) and whether the case the lobby group is making is reasonable.
+
+## Consumer Price Index
+
+The _Consumer Price Index_ is a quarterly measure of price chages produced by the _Australian Bureau of Statistics_. The latest report available is the Decemeber 2017 quarterly report, published on 31/01/2018. [@ABS2017]
+
+## Calculating the CPI
+
+ It is defined in relation to a pre-determined basket of goods and services that make up the majority of household expenditure for a particular population group. In the lastest report, the basket consisted of spending on:
+
+
+* Food and non-alcoholic beverages
+* Alcohol and tobacco
+* Clothing and footwear
+* Housing
+* Furnishings, household equipment and services
+* Health
+* Transport
+* Communication
+* Recreation and culture
+* Education
+* Insurance and financial services.
+
+We will be comparing changes in the index for the _Health_ and _Education_ groups to every other group to determine the cumulative effect of these categories over the last six financial years. 
+
+## Measuring Change
+
+Change is measured in a number of different ways. The following comes rom the _Explanatory Notes_ in the latest report on the ABS website.
+
+> Percentage changes are calculated to illustrate three different kinds of movements in index numbers:
+>
+* movements between consecutive financial years (where the index numbers for financial years are simple averages of the quarterly index numbers
+* movements between corresponding quarters of consecutive years
+* movements between consecutive quarters.
+
+Obviously, changes depend on the frequency of measurement; daily price changes would not be represented faithfully by a montly measure. The ABS collects price data for most items in the basket on a monthly basis (see  _Prices_ in [@ABS2017]) but will adjust their collection practices for items whose price is less volatile. Per _Explanatory Notes_, with regards to Education expenses:
+
+> There are a few items where prices are changed at infrequent intervals, for example education fees where prices are set once a year. In these cases, the frequency of price collection is modified accordingly. 
+
+Therefore, monthly changes on education (and to a lesser extent health) spending can only be measured in comparison to the other component parts of the CPI and not on their own - they simply aren't volatile enough. As a result I will be restricting my analysis to comparisons of FY data.
+
+As stated previously, we will be compaing change in the _index_ with FY 2011/12 representing the baseline (100.0).
+
+## Analysis
+
+The following data is available in __Table 4__ or the December 2017 quarterly CPI report. To account for the change over time, I have calculated the cumulative change from the index baseline in FY 2011/12. To do this I took the reported index change, divided it by 100 and then multiplied each year togther before multiplying again by 100 to bring the measure back to scale.
+
+```{r}
+df = data.frame(matrix(c(100.0, 100.5, 101.8, 103.9, 104.1, 105.9,
+100.0, 103.9,110.0,116.7,123.5,130.8,
+100.0, 99.5,99.3,97.9,97.5,97.2,
+100.0, 104.9,109.0,111.7,113.9,116.4,
+100.0, 100.8,101.5,102.5,104.3,104.9,
+100.0, 106.9,111.6,116.5,122.1,126.7,
+100.0, 101.1,103.5,100.8,99.1,99.6,
+100.0, 101.7,103.0,99.7,93.7,88.5,
+100.0, 99.1,101.4,102.8,103.7,103.7,
+100.0, 105.9,111.6,117.6,122.7,126.8,
+100.0, 102.8,104.5,106.3,108.6,111.4,
+100.0, 102.3,105.0,106.8,108.3,110.2), nrow = 6))
+rownames(df) = c("2011/12","2012/13","2013/14","2014/15","2015/16","2016/17")
+colnames(df) = c("Food / Non-Alcoholic Beverages","Alcohol and Tobacco","Clothing and Footwear","Housing","Furnishings / Household Equipment & Services","Health", "Transport","Communication","Recreation / Culture","Education","Insurance / Financial Services","All Groups")
+pander::pander(df, split.table = 160, style = 'rmarkdown')
+```
+
+```{r, fig.height=5}
+group1 <- c("Food / Non-Alcoholic Beverages","Alcohol and Tobacco","Clothing and Footwear","Housing","Furnishings / Household Equipment & Services","Transport","Communication","Recreation / Culture","Insurance / Financial Services")
+group2 <- c("Health","Education","All Groups")
+
+library(purrr)
+dfplot = df %>% 
+  mutate(FY = c("2011/12","2012/13","2013/14","2014/15","2015/16","2016/17")) %>% 
+  gather(measure, n, 1:12) %>% 
+  mutate(n = n/100) %>% 
+  group_by(FY, measure) %>% 
+  summarise(result = prod(n)*100) %>% 
+  ungroup()
+
+dfg1 <- filter(dfplot, measure %in% group1) %>% as.data.frame() 
+dfg2 <- filter(dfplot, measure %in% group2) %>%  as.data.frame()
+
+ggplot(data = dfg1,aes(x = FY, y = result, group = measure,colour = measure)) +
+  geom_line(alpha = 0.3, size = 0.8) +
+  geom_line(data = dfg2, size = 1) +
+  theme_light() +
+  labs(title = "CPI GROUPS, Weighted average of eight capital cities",
+       subtitle = "2011/12 to 2016/17",
+       y = "Index change (cumulative)",
+       colour = "Group",
+       caption = "Source: ABS - CPI December Qtr 2017, Table 4") +
+  theme(axis.title.x = element_blank(),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 6))
+```
+
+As we can see, the _Health_ and _Education_ groups are the second and third largest contributors (behind spending on Alcohol and Tobacco products) to the overall change in CPI (All Groups). Therefore, the argument you are making is reasonable: Health and Education are increasing faster than any other group of spending other than Alcohol and Tobacco spending.
+
+# References
+

@@ -1,0 +1,94 @@
+---
+title: "Consult 1"
+author: "B. Moran"
+date: "19 April 2018"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(knitr)
+library(kableExtra)
+library(magrittr)
+```
+
+## Background
+
+This was the client's first consultation but it was not the first time that Kim had advised on this project; the client was continuing work on a project that had been started by a previous Masters student through UoN. 
+
+```{r}
+snap.dat <- matrix(c("$n_{1,1}$","$n_{1,2}$","$n_{1,3}$","$n_{1,4}$",
+                     "$n_{2,1}$","$n_{2,2}$","$n_{2,3}$","$n_{2,4}$",
+                     "$n_{3,1}$","$n_{3,2}$","$n_{3,3}$","$n_{3,4}$",
+                     "$n_{4,1}$","$n_{4,2}$","$n_{4,3}$","$n_{4,4}$",
+                     "$n_{5,1}$","$n_{5,2}$","$n_{5,3}$","$n_{5,4}$",
+                     "$n_{6,1}$","$n_{6,2}$","$n_{6,3}$","$n_{6,4}$"),
+                   byrow = TRUE,
+                   nrow = 6,
+                   dimnames = list(rep(c("Ask","Advise","Refer"),2), c("Smoking","Nutrition","Alchohol","Physical Activity")))
+knitr::kable(snap.dat, 
+             format = "latex",
+             escape = FALSE, 
+             align = "c",
+             booktabs = TRUE,
+             caption = "Negative Health Behaviour Referral Matrix") %>% 
+  kable_styling(full_width = TRUE) %>% 
+  add_header_above(c("", "Health Behaviour"= 4)) %>% 
+  group_rows("Baseline Group",1,3,latex_gap_space = "1em") %>% 
+  group_rows("Intervention Group",4,6,latex_gap_space = "1em")
+```
+
+Continuation of previous masters project. Providing care for negative health behaviours (smoking, alcohol, nutrition, physical activity) for client's of Newcastle Mental Health services.
+
+Intervention: referrals to quit services (quitline for smoking, get healthy for others) should occur as part of a regular consultation with a clinician from the service if the behaviour is noted. Clinician's should also enquire and make referrals if necessary. But, this is not often the case. The intervention involves placing a specialist clinician into the service who is tasked with providing this service. 
+
+Design: client's are randomly assigned to receive an appoinment to the specialist. All client's are asked to complete a survey at two points: at the initial appoinment (Baseline) and at the one-month follow up. Client's assigned to the treatment group have their appointment's with the specialist scheduled between these two 
+
+### A description of what the client wanted to know
+
+Initial meeting.
+
+Expectation is that all client's are asked about negative health behaviours at their contacts with the service. However, it is up to the clinician to exercise their discretion as to whether or not to ask. Study posits that they aren't doing it enough.
+
+
+### A summary of the problem, potentially covering,
+
+#### the questions asked
+
+#### the variables and how measured,
+
+#### the study design or the sampling procedures,
+
+Generalised Linear Mixed Model
+
+#### likely analysis,
+
+Gender as a covariate.
+
+
+
+
+#### selection of computing program
+
+Previous GLMM was implemented in SPSS.
+
+#### A description of the solution/next step/… recommended by the consultant
+
+Problems: clien't unsure how to deal with two issues. What to do with client's lost to follow up and what to do with client's who have already been referred AND contacted one or other of the services.
+
+Next question? Proportions of clients referred to each service.
+Whether to eliminate client's that have previously been referred to the service.
+
+## Answers to the following:
+
+### What were the key questions that the consultant asked?
+
+### Did the consultation appear to proceed satisfactorily, or were there communication problems or other sorts of difficulties?
+
+### What could the consultant have done differently to gain a better consultation?
+
+### Do you think that the solution was appropriate for the problem - and the client? Give reasons for your answer.
+
+### You should also indicate what you have learned about the consulting process from these observations.

@@ -1,0 +1,207 @@
+---
+title: "Assignment 5"
+author: "Benjamin Moran \n c3076448 (University of Newcastle)"
+date: 'Date Generated: `r Sys.Date()`'
+bibliography: Ass5.bib
+output:
+  pdf_document: default
+  html_document:
+    df_print: tibble
+    fig_caption: yes
+subtitle: STAT904 Statistical Consulting
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(kableExtra)
+```
+
+#### Plagiarism Statement 
+No part of this Assignment has been copied from anyone else, and I have not lent any part of it to anyone else. But it is unfinished - sorry, I've been unwell.
+
+# Question 1
+
+A client wants to know what sample size to use. After some questioning you determine that the main objective of the national study is to estimate the proportion of people who are obese. The client seems to have difficulty in expressing the reliability required.
+
+## a) Construct a table giving the margin of error for different sample sizes for estimating the relevant proportion for a realistic range of assumptions about the proportion.
+
+According to the _Australian Institute of Health and Welfare_ report _"A picture of overweight and obesity in Australia" (2017)_ [@AIHW2017], the proportion of adult Australians who are obese is estimated to be $27.9\%$ ($\approx27\%$ for men; $\approx28\%$ for women). We will use this figure as an appropriate estimate for the proportion going forward.
+
+
+```{r}
+Z <- 1.96
+p =  27.9/100
+moe = seq(0.005, 0.05, by = 0.005)
+
+results = matrix(NA, nrow = length(p), ncol = length(moe)) %>% 
+  as.data.frame()
+
+for(i in 1:length(p)){
+  for(j in 1:length(moe)){
+    MEZ2 <- (moe[j]/Z)^2
+    val = (p[i]*(1-p[i]))/MEZ2
+    results[i,j] = round(val, 0)
+}   
+}
+colnames(results) = moe
+rownames(results) = c("Australia")
+knitr::kable(results, "latex", booktabs = TRUE, align = "c",
+             caption =  "Sample Size required for specified MOE") %>% 
+  add_header_above(c(" ", "Margin of Error" = 10)) %>% 
+  kable_styling(bootstrap_options = "striped", full_width = F, latex_options   = "hold_position")
+```
+
+
+\newpage 
+
+## b) After further discussion it becomes clear that there is a requirement to produce estimates for each of the six states and compare the proportion of people who are obese between the six states. Construct further tables to help your discussions with the client of the sample size required.
+
+The following figures come from the supplementary data for the above mentioned AIHW report [@AIHW2017].
+
+```{r}
+ow.dat <- matrix(c(28.2,26.4,30.2,30.0,24.6,32.3,29.0,23.9,27.9), byrow = TRUE, nrow = 1, dimnames = list(c("Obese"),c("NSW","Vic.","Qld","SA","WA","Tas.","NT","ACT","Australia")))
+
+knitr::kable(ow.dat, "latex", booktabs = TRUE, align = "c", caption = "Proportion of Adults who are Obese, by State") %>% 
+  kable_styling(bootstrap_options = "striped", full_width = F, latex_options   = "hold_position")
+```
+
+
+```{r}
+Z <- 1.96
+p =  ow.dat[1,]/100
+moe = seq(0.005, 0.05, by = 0.005)
+
+results = matrix(NA, nrow = length(p), ncol = length(moe)) %>% 
+  as.data.frame()
+
+for(i in 1:length(p)){
+  for(j in 1:length(moe)){
+    MEZ2 <- (moe[j]/Z)^2
+    val = (p[i]*(1-p[i]))/MEZ2
+    results[i,j] = round(val, 0)
+}   
+}
+colnames(results) = moe
+rownames(results) = c("NSW","Vic.","Qld","SA","WA","Tas.","NT","ACT","Australia")
+knitr::kable(results, "latex",booktabs = TRUE, align = "c",
+             caption =  "Sample Size required for specified MOE, by State") %>% 
+  add_header_above(c(" ", "Margin of Error" = 10)) %>% 
+  kable_styling(bootstrap_options = "striped", full_width = F, latex_options   = "hold_position")
+```
+
+\newpage
+
+## c) The client ask you to write as short report containing the tables and some commentary on what they mean to take to a steering committee meeting. Produce such a report. Be sure to make clear the assumptions you have made the sampling procedure to be used.
+
+NA
+
+# Question 2
+
+A client wants to conduct a survey to analyse the change in the proportion of people who eat at least 2 serves of vegetables a day before and after an advertising campaign that promotes healthy eating. Assume independent samples at each occasion and that the current proportion is approximately 30%.
+
+## a) Suppose you are testing a null hypothesis H0 versus H1. Define the power of a statistical test. Briefly explain how this definition applies to this survey.
+
+### What is Statistical Power
+
+When we are conducting some statistical analysis we are often doing so from a position of ignorace: i.e. we don't know what the truth is beforehand. We will begin by stating an _alternative hypothesis_ - $H_1$ - detailing some change or effect that we expect to observe and then test that against the _null hypothesis_ - $H_0$ - representing the absence of that effect or change.
+
+Let's suppose that we are going to assess our hypothesis using a very simple test. This test will return a value of either __TRUE__ or __FALSE__. We also know that $H_0$ is either TRUE or FALSE, which means that there are four possible outcomes for our analysis. Two of those outcome are correct: the test rejects $H_0$ when it is False (a _True Negative_) or the test fails to reject $H_0$ when it is TRUE (a _TRUE Positive_). However, the other two are errors: the test fails to reject $H_0$ when it is FALSE (a _FALSE Negative_) or the test rejects $H_0$ when it is TRUE (a _False Positive_). These last two are know as a __Type I__ and __Type II__ error respectively.
+
+```{r}
+matrix(c("Correct: (1 - $\\alpha$)", "Type II Error: ($\\beta$)","Type I Error: ($\\alpha$)","Correct: ($1 - \\beta$)"), 
+       byrow = TRUE, 
+       nrow = 2,
+       dimnames = list(c("Fail to Reject","Reject"),c("True","False"))) %>% 
+                  as.data.frame() %>% 
+                  kable(format = "latex",
+                        booktabs = T,
+                        escape = FALSE, 
+                        caption =  "Status of Inference Outcome by $H_0$ State") %>% 
+  add_header_above(c(" ", "Null Hypothesis State" = 2)) %>% 
+  kable_styling( latex_options   = "hold_position")
+```
+
+When assessing the test we are using for any analysis we are interested in how good it is a producing correct results or - in other words - how often it produces Type I or Type II errors. Every test as a chance of producing these errors, so the best we can do is reduce that chance to an acceptable level. 
+
+The probability of producing Type I errors (usually denoted $\alpha$) is related to the test's _significance level_. Often when reporting results of some analysis you will see a _p value_ attached to it. This value represents the _likelihood of producing a False Positive_ given the reported results. Because we cannot eliminate this entirely, we specify ahead of time the likelihood that we are comfortable with, which is usually $\alpha = 5\%$. Thus, our $1-\alpha$ _Confidence Interval_ is $95\%$ and if our reported p value is less than our $\alpha$ we accept the result.
+
+Type II errors ($\beta$) on the other hand are related to the test's _power level_ (usually denoted as $1-\beta$). It doesn't have an analogue as easily recogniseable as a p value, but it is a very easy concept to grasp intuitevely. Think of it like trying to determine whether a person is an adult or not by their height. Set the level too low and you will mistakenly identify some taller children as adults. Increase the level and you will mistakenly identify fewer children as adults. However, increasing the level will also cause you to mistakenly identify some shorter adults as children and this is the trade off with statistical power: it represents the level at which you can be reasonably confident that you can detect whatever you are testing for, but that "reasonablenss" is subjective (much like the $\alpha = 5\%$ level). You need to decide how many children you are happy to misidentify as an adult (i.e. False Positives) whilst keeping the test useable.
+
+## b) What is the target population for the survey?
+
+The target population of any survey is the entire group that the survey administrators want information about. In this instance, the target population is every person who sees the advertising campaign.
+
+## c) What size sample is needed on each occasion to estimate the change with a margin of error of 2 percentage point? Show your calculations.
+
+This test we are doing here is a _Paired t Test_. Given that we assume the current proportion is $30\%$ we can do the following.
+
+```{r, eval = FALSE}
+ME <- 0.02 # Margin of Error
+Z <- 1.96 # Z-score corresponding to 95% CI
+p =  seq(0.3,0.49, by = 0.01)
+delta = seq(0.01, 0.2, by = 0.01)
+
+for(i in 1:length(p)){
+    val = (p[i]*(1-p[i]))/((ME/Z)^2)
+    results[i,1] = round(val, 0)
+}
+```
+
+```{r, echo = FALSE}
+
+ME <- 0.02
+Z <- 1.96
+MEZ2 <- (ME/Z)^2
+p =  seq(0.3,0.49, by = 0.01)
+beta = seq(0.5,0.95, by = 0.05)
+delta = seq(0.01, 0.2, by = 0.01)
+
+results = matrix(NA, nrow = 10, ncol = 4) %>% 
+  as.data.frame()
+
+for(i in 1:10){
+    val = (p[i]*(1-p[i]))/MEZ2
+    results[i,1] = delta[[i]]
+    results[i,2] = round(val, 0)
+    
+}
+for(i in 1:10){
+  j = i + 10
+    val = (p[j]*(1-p[j]))/MEZ2
+    results[i,3] = delta[[j]]
+    results[i,4] = round(val, 0)
+    
+}
+colnames(results) = c("Delta","N","Delta","N")
+knitr::kable(results, "latex", align = "c") %>% 
+  kable_styling(bootstrap_options = "striped", full_width = F) %>% 
+  column_spec(1, bold = T) %>% 
+  column_spec(3, bold = T, border_left = TRUE) 
+```
+
+## d) What size sample is needed on each occasion to have an 80% power of detecting a true change of 2 percentage point, using a test with size of 5%? How does the sample size change if a 90% power is needed? Show your calculations.
+
+See the following code.
+
+```{r, echo = c(1:8)}
+beta <- list(0.8,0.9) # power level
+nlist = vector("numeric", 2L)
+for(i in 1:2){
+  nlist[i] = power.t.test(power = beta[[i]],
+                          delta = 0.02, # true change
+                          sig.level = 0.05, # significance level
+                          type = "paired")$n # paired two-sample t-test
+}
+
+results <- matrix(round(nlist,0), dimnames= list(paste("Power =",beta),c("Sample Size")))
+knitr::kable(results)
+```
+
+
+## e) Comment on the results of (c) and (d).
+
+NA
+
+# References

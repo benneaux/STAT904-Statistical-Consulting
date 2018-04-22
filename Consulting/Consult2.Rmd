@@ -1,0 +1,98 @@
+---
+title: "Consult 2 "
+author: "B. Moran"
+date: "19 April 2018"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### A summary of the problem, potentially covering,
+
+#### the questions asked
+
+#### the variables and how measured,
+
+#### the study design or the sampling procedures,
+## Background
+
+This consultation was the second that the client has attended with Kim, after a previous meeting last year. The client is a doctoral candidate at the University of Newcastle in the School of Psychology and is studying a possible causal pathway of __student burnout__ for particular students. These students were those who gender placed them in the small minority within their degree program; specifically, the study looked at:
+
+* _Male_ undergraduates studying within the __Nursing__ program and,
+* _Female_ undergraduates studying within the __Engineering__ program.
+
+The client had constructed a basic model that hypothesised a link between the _stereotype threats_ (defined below) experienced by the student and the likelihood that they would then experience burnout. Additionally, the client hypothesised that the strength of _Gender Identification_ - i.e. how strongly the student identifies with their gender - affects how likely the student is to suffer burnout. 
+
+To study these interactions and effects, the client was using a _Moderated Mediation Model_.
+
+### Definitions
+
+__Stereotype Threat__: A _stereotype threat_ is one that applies within a specific context (i.e. within a university course program) to a particular (usually minority) group. For example, a female engineering student may be encumbered with lower expectations academically then a male student due to a perceived lack of natural ability. A male nursing student may also encounter an assumption that they are less caring or less suited to particular nursing tasks because they are male. The outcome in both these cases can be increased effort on behalf of the affected students to overcome these stereotyped expectations, which can then lead to overexertion and burnout.
+
+__Gender Identification__: 
+
+Gender identification is defined as how strongly the participant identifies with his/her gender.
+
+
+## Collecting the data
+
+The data has been collected via an online survey.
+
+## The Moderated Mediation Model
+
+
+
+## The client's question
+
+After their initial consultation, the client had gone away attempted to apply their chosen model to their data. At this meeting they were seeking assistance with interpreting their preliminary results as well as some indication as to where they should go from this point.
+
+### Interpreting the output.
+
+Q1: The mediator was reported as significant, but not the moderator. Do they need to do a separate analysis or would all the necessary results be reported by the first. 
+
+A1: No you don't. All of the results are reported.
+
+Q2: Covariance Matrx or regression parameters - do we need to worry about that?
+A2: No. 
+
+
+The MMM macros are implemented in SPSS was implemented in SPSS. (model 8)
+
+Problems: clien't unsure how to deal with two issues. What to do with client's lost to follow up and what to do with client's who have already been referred AND contacted one or other of the services.
+
+
+
+
+
+
+
+
+## Answers to the following:
+
+### What were the key questions that the consultant asked?
+
+He asked a number of questions:
+
+* Are you paying for this? Maybe not what you had in mind but I thought it was relevant.
+
+
+
+### Did the consultation appear to proceed satisfactorily, or were there communication problems or other sorts of difficulties?
+
+
+
+### What could the consultant have done differently to gain a better consultation?
+
+
+
+### Do you think that the solution was appropriate for the problem - and the client? Give reasons for your answer.
+
+
+
+### You should also indicate what you have learned about the consulting process from these observations.
+
+
